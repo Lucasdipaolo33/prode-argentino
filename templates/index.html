@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PRODE ARGENTINO</title>
     <link rel="icon" href="https://img.icons8.com/emoji/48/soccer-ball-emoji.png" type="image/png">
     <link rel="apple-touch-icon" href="https://img.icons8.com/emoji/48/soccer-ball-emoji.png">
@@ -97,7 +97,6 @@
             padding: 5px 10px; border-radius: 12px; 
             border: 1px solid rgba(59, 130, 246, 0.12); 
             flex-shrink: 0;
-            transition: border-color 0.3s;
         }
         .fila:nth-child(odd) { background: var(--tarjeta); }
         .fila:nth-child(even) { background: var(--tarjeta-clara); }
@@ -202,9 +201,33 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE SONIDOS
-        const audioClick = new Audio('https://www.gstatic.com/chat/sounds/incoming_message.mp3');
-        audioClick.volume = 1.0; // Volumen al máximo
+        // MOTOR DE AUDIO (Sintetizador)
+        let audioCtx = null;
+
+        function iniciarAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function sonarClick() {
+            iniciarAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Tono agudo delicado
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime); // Volumen
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
 
         function actualizarTiempo() {
             document.getElementById('fecha').innerText = new Date().toLocaleDateString('es-AR');
@@ -223,11 +246,7 @@
         }, 1000);
 
         function votar(el) {
-            // Reproducir sonido
-            audioClick.pause();
-            audioClick.currentTime = 0;
-            audioClick.play().catch(e => console.log("Audio bloqueado hasta interaccion"));
-
+            sonarClick(); // Ejecutar sonido sintético
             const fila = el.closest('.fila');
             fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
