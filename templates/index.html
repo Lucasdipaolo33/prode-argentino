@@ -27,7 +27,6 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0; padding: 0;
             min-height: 100vh; width: 100vw;
-            /* Permitimos el scroll para ver el botón de abajo */
             overflow-x: hidden;
             overflow-y: auto;
             display: flex; justify-content: center;
@@ -87,7 +86,7 @@
             display: flex;
             flex-direction: column; 
             padding: 10px 0;
-            gap: 8px; /* Espacio entre partidos */
+            gap: 8px;
         }
 
         .fila { 
@@ -98,6 +97,7 @@
             padding: 5px 10px; border-radius: 12px; 
             border: 1px solid rgba(59, 130, 246, 0.12); 
             flex-shrink: 0;
+            transition: border-color 0.3s;
         }
         .fila:nth-child(odd) { background: var(--tarjeta); }
         .fila:nth-child(even) { background: var(--tarjeta-clara); }
@@ -110,14 +110,14 @@
         .btn-lev.active::after { content: '⚽'; font-size: 0.7rem; }
         .btn-lev.active span { display: none; }
 
-        /* FOOTER FIXED */
+        /* FOOTER */
         .footer { 
             width: 100%; height: 80px; 
             display: flex; justify-content: center; align-items: center; 
             background: #000; flex-shrink: 0;
             border-top: 1px solid #1e293b;
             margin-top: auto;
-            padding-bottom: env(safe-area-inset-bottom); /* Para iPhone nuevos */
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .btn-confirmar { width: 90%; height: 48px; background: linear-gradient(135deg, #1e40af, #3b82f6); border: none; border-radius: 50px; color: white; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
 
@@ -202,6 +202,10 @@
     </div>
 
     <script>
+        // CONFIGURACIÓN DE SONIDOS
+        const audioClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+        audioClick.volume = 1.0; // Volumen al máximo
+
         function actualizarTiempo() {
             document.getElementById('fecha').innerText = new Date().toLocaleDateString('es-AR');
         }
@@ -219,6 +223,11 @@
         }, 1000);
 
         function votar(el) {
+            // Reproducir sonido
+            audioClick.pause();
+            audioClick.currentTime = 0;
+            audioClick.play().catch(e => console.log("Audio bloqueado hasta interaccion"));
+
             const fila = el.closest('.fila');
             fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
