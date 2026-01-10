@@ -212,23 +212,34 @@
 
         function sonarClick() {
             iniciarAudio();
-            const osc = audioCtx.createOscillator();
+            
+            // Creamos dos osciladores para que el sonido tenga "doble impacto"
+            const osc1 = audioCtx.createOscillator();
+            const osc2 = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            // Un tono un poquito más bajo (600 en vez de 800) para que tenga más cuerpo
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
-            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.12);
+            // Usamos 'triangle' que suena mucho más fuerte que 'sine'
+            osc1.type = 'triangle'; 
+            osc1.frequency.setValueAtTime(600, audioCtx.currentTime);
+            osc1.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
 
-            // VOLUMEN AL MÁXIMO (1.0)
-            gain.gain.setValueAtTime(1.0, audioCtx.currentTime); 
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+            // El segundo oscilador le da el "brillo" metálico para que se escuche lejos
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            osc2.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
 
-            osc.connect(gain);
+            // Saturamos el volumen al máximo real
+            gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
             gain.connect(audioCtx.destination);
 
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.12);
+            osc1.start();
+            osc2.start();
+            osc1.stop(audioCtx.currentTime + 0.1);
+            osc2.stop(audioCtx.currentTime + 0.1);
         }
 
         function actualizarTiempo() {
