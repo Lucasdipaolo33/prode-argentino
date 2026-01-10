@@ -215,18 +215,20 @@
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
+            // Un tono un poquito más bajo (600 en vez de 800) para que tenga más cuerpo
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(800, audioCtx.currentTime); // Tono agudo delicado
-            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
+            osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.12);
 
-            gain.gain.setValueAtTime(0.4, audioCtx.currentTime); // Volumen
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            // VOLUMEN AL MÁXIMO (1.0)
+            gain.gain.setValueAtTime(1.0, audioCtx.currentTime); 
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
 
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc.start();
-            osc.stop(audioCtx.currentTime + 0.1);
+            osc.stop(audioCtx.currentTime + 0.12);
         }
 
         function actualizarTiempo() {
