@@ -213,33 +213,44 @@
         function sonarClick() {
             iniciarAudio();
             
-            // Creamos dos osciladores para que el sonido tenga "doble impacto"
+            // Creamos 3 osciladores en lugar de 2 para triplicar la presión sonora
             const osc1 = audioCtx.createOscillator();
             const osc2 = audioCtx.createOscillator();
+            const osc3 = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            // Usamos 'triangle' que suena mucho más fuerte que 'sine'
-            osc1.type = 'triangle'; 
-            osc1.frequency.setValueAtTime(600, audioCtx.currentTime);
-            osc1.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
+            // Onda cuadrada: es la que más fuerte suena en parlantes pequeños
+            osc1.type = 'square'; 
+            osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
+            osc1.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
 
-            // El segundo oscilador le da el "brillo" metálico para que se escuche lejos
-            osc2.type = 'sine';
-            osc2.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            osc2.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.1);
+            // Onda triangular para darle cuerpo
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc2.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
 
-            // Saturamos el volumen al máximo real
-            gain.gain.setValueAtTime(1.0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+            // Onda senoidal aguda para el "clic" inicial
+            osc3.type = 'sine';
+            osc3.frequency.setValueAtTime(1500, audioCtx.currentTime);
+            osc3.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.05);
+
+            // AMPLIFICACIÓN: Seteamos la ganancia por encima de 1.0 para forzar el volumen
+            // Esto actúa como un amplificador
+            gain.gain.setValueAtTime(2.0, audioCtx.currentTime); 
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.12);
 
             osc1.connect(gain);
             osc2.connect(gain);
+            osc3.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc1.start();
             osc2.start();
-            osc1.stop(audioCtx.currentTime + 0.1);
-            osc2.stop(audioCtx.currentTime + 0.1);
+            osc3.start();
+            
+            osc1.stop(audioCtx.currentTime + 0.12);
+            osc2.stop(audioCtx.currentTime + 0.12);
+            osc3.stop(audioCtx.currentTime + 0.12);
         }
 
         function actualizarTiempo() {
