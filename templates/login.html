@@ -34,14 +34,15 @@
             height: auto;
             margin-top: -150px; 
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
-            pointer-events: none; /* Ignora toques */
+            pointer-events: none;
         }
 
         h1 {
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            margin-top: -110px; 
+            /* SUBIMOS EL TÍTULO: De -110px a -130px para pegarlo más al logo */
+            margin-top: -130px; 
             margin-bottom: 0px;
             text-align: center;
             letter-spacing: 3px;
@@ -49,7 +50,7 @@
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
-            pointer-events: none; /* Ignora toques */
+            pointer-events: none;
         }
 
         .bloque-login {
@@ -58,13 +59,12 @@
             box-sizing: border-box;
             margin-top: 50px; 
             position: relative;
-            z-index: 999; /* ESTO LO PONE AL FRENTE DE TODO */
+            z-index: 999;
         }
 
         .campo-entrada {
             position: relative;
             margin-bottom: 18px;
-            z-index: 1000;
         }
 
         input {
@@ -80,14 +80,12 @@
             outline: none;
             text-transform: uppercase;
             position: relative;
-            z-index: 1001;
         }
 
         input::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* EL OJITO CON Z-INDEX MÁXIMO */
         .icono-ojo {
             position: absolute;
             right: 15px;
@@ -96,8 +94,9 @@
             color: #3399ff;
             cursor: pointer;
             font-size: 22px;
-            z-index: 1002; /* Más arriba que el input */
+            z-index: 1002;
             padding: 5px;
+            user-select: none;
         }
 
         .boton-ingresar {
@@ -112,8 +111,6 @@
             text-transform: uppercase;
             margin-top: 15px;
             cursor: pointer;
-            position: relative;
-            z-index: 1001;
         }
     </style>
 </head>
@@ -131,7 +128,7 @@
                 
                 <div class="campo-entrada">
                     <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
-                    <span class="icono-ojo" onclick="verContrasena()">👁️</span>
+                    <span class="icono-ojo" id="toggle-ojo" onclick="verContrasena()">👁️</span>
                 </div>
 
                 <button type="submit" class="boton-ingresar">INGRESAR</button>
@@ -142,10 +139,14 @@
     <script>
         function verContrasena() {
             var inputClave = document.getElementById("password");
+            var icono = document.getElementById("toggle-ojo");
+            
             if (inputClave.type === "password") {
                 inputClave.type = "text";
+                icono.innerText = "🙈"; // Cambia a ojo cerrado
             } else {
                 inputClave.type = "password";
+                icono.innerText = "👁️"; // Vuelve a ojo abierto
             }
         }
     </script>
