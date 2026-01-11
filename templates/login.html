@@ -41,8 +41,8 @@
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            /* SUBIMOS EL TÍTULO: De -110px a -130px para pegarlo más al logo */
-            margin-top: -130px; 
+            /* SUBIMOS EL TÍTULO: Volvemos a -150px para pegarlo bien al logo */
+            margin-top: -150px; 
             margin-bottom: 0px;
             text-align: center;
             letter-spacing: 3px;
@@ -57,7 +57,7 @@
             width: 100%;
             padding: 0 25px;
             box-sizing: border-box;
-            margin-top: 50px; 
+            margin-top: 55px; 
             position: relative;
             z-index: 999;
         }
@@ -128,7 +128,7 @@
                 
                 <div class="campo-entrada">
                     <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
-                    <span class="icono-ojo" id="toggle-ojo" onclick="verContrasena()">👁️</span>
+                    <span class="icono-ojo" id="toggle-ojo" onclick="verContrasena()">🙈</span>
                 </div>
 
                 <button type="submit" class="boton-ingresar">INGRESAR</button>
@@ -143,10 +143,10 @@
             
             if (inputClave.type === "password") {
                 inputClave.type = "text";
-                icono.innerText = "🙈"; // Cambia a ojo cerrado
+                icono.innerText = "👁️"; // Al ver la clave, muestra el ojo
             } else {
                 inputClave.type = "password";
-                icono.innerText = "👁️"; // Vuelve a ojo abierto
+                icono.innerText = "🙈"; // Al ocultar, vuelve el monito
             }
         }
     </script>
