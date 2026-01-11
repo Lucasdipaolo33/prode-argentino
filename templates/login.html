@@ -25,6 +25,7 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+            height: 100%;
         }
 
         .logo-img {
@@ -33,7 +34,7 @@
             height: auto;
             margin-top: -150px; 
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
-            pointer-events: none; /* Hace que el logo no moleste al tocar lo de abajo */
+            pointer-events: none; /* Ignora toques */
         }
 
         h1 {
@@ -45,25 +46,25 @@
             text-align: center;
             letter-spacing: 3px;
             position: relative;
-            z-index: 1; /* Bajamos la prioridad del título */
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
-            pointer-events: none; /* IMPORTANTE: El título ya no bloquea los clics */
+            pointer-events: none; /* Ignora toques */
         }
 
         .bloque-login {
             width: 100%;
             padding: 0 25px;
             box-sizing: border-box;
-            margin-top: 40px; 
+            margin-top: 50px; 
             position: relative;
-            z-index: 10; /* Subimos el login al frente para que puedas escribir */
+            z-index: 999; /* ESTO LO PONE AL FRENTE DE TODO */
         }
 
         .campo-entrada {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            z-index: 1000;
         }
 
         input {
@@ -77,22 +78,26 @@
             font-size: 16px;
             box-sizing: border-box;
             outline: none;
-            text-transform: uppercase; 
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1001;
         }
 
         input::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
 
-        /* EL OJITO VUELVE AQUÍ */
+        /* EL OJITO CON Z-INDEX MÁXIMO */
         .icono-ojo {
             position: absolute;
             right: 15px;
-            top: 15px;
+            top: 50%;
+            transform: translateY(-50%);
             color: #3399ff;
             cursor: pointer;
-            font-size: 20px;
-            z-index: 20;
+            font-size: 22px;
+            z-index: 1002; /* Más arriba que el input */
+            padding: 5px;
         }
 
         .boton-ingresar {
@@ -105,8 +110,10 @@
             font-weight: bold;
             font-size: 18px;
             text-transform: uppercase;
-            margin-top: 10px;
+            margin-top: 15px;
             cursor: pointer;
+            position: relative;
+            z-index: 1001;
         }
     </style>
 </head>
@@ -121,10 +128,12 @@
                 <div class="campo-entrada">
                     <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
                 </div>
+                
                 <div class="campo-entrada">
                     <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
                     <span class="icono-ojo" onclick="verContrasena()">👁️</span>
                 </div>
+
                 <button type="submit" class="boton-ingresar">INGRESAR</button>
             </form>
         </div>
