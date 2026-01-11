@@ -12,50 +12,56 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
-        /* CONTENEDOR DE LOGO Y TÍTULO (ARRIBA) */
-        .header-seccion {
+        /* 1. LOGO Y TÍTULO ARRIBA */
+        .seccion-superior {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 20px;
+            padding-top: 0px;
         }
 
         .logo-img {
-            width: 180px; /* Tamaño controlado para que no empuje todo */
+            width: 550px; /* Volvemos al tamaño gigante que tenías */
+            max-width: 140%; 
             height: auto;
+            margin-top: -85px; /* Tu margen original */
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
-            margin-bottom: 10px; /* ESPACIO ENTRE LOGO Y TEXTO */
         }
 
         h1 {
             font-style: italic;
             text-transform: uppercase;
-            font-size: 26px;
-            margin: 0; /* QUITAMOS LOS MÁRGENES NEGATIVOS */
+            font-size: 28px;
+            /* AJUSTE CLAVE: Bajamos el título de -190 a -140 para que no pise el logo */
+            margin-top: -140px; 
+            margin-bottom: 0px;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 10;
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
         }
 
-        /* CONTENEDOR DEL LOGIN (CENTRADO) */
-        .login-seccion {
-            flex: 1; /* Esto hace que el login ocupe el centro de la pantalla */
+        /* 2. LOGIN CENTRADO */
+        .seccion-login {
+            flex-grow: 1; /* Ocupa todo el centro */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: center; /* Centra los cuadritos en el medio */
             width: 100%;
-            max-width: 350px;
-            padding: 20px;
+            max-width: 400px;
+            padding: 0 25px;
             box-sizing: border-box;
+            margin-top: -30px; /* Para que no quede tan abajo por el empuje del h1 */
         }
 
         .mensaje-error {
@@ -72,7 +78,7 @@
 
         .campo-entrada {
             position: relative;
-            margin-bottom: 15px; 
+            margin-bottom: 18px; 
         }
 
         input {
@@ -89,10 +95,9 @@
             text-transform: uppercase; 
         }
 
-        /* COLOR SUAVE PARA USUARIO Y CONTRASEÑA */
+        /* TEXTO SUAVE DENTRO */
         input::placeholder {
             color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
         }
 
         .icono-ojo {
@@ -102,6 +107,7 @@
             color: #3399ff;
             cursor: pointer;
             font-size: 20px;
+            z-index: 20;
         }
 
         .boton-ingresar {
@@ -116,18 +122,17 @@
             text-transform: uppercase;
             cursor: pointer;
             box-shadow: 0 0 15px rgba(51, 153, 255, 0.4);
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header-seccion">
+    <div class="seccion-superior">
         <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
         <h1>Prode Argentino</h1>
     </div>
 
-    <div class="login-seccion">
+    <div class="seccion-login">
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             {% for message in messages %}
