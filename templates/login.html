@@ -18,20 +18,12 @@
             overflow: hidden;
         }
 
-        /* 1. LOGO Y TÍTULO ARRIBA */
-        .seccion-superior {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 0px;
-        }
-
+        /* PASO 1: LOGO GIGANTE ARRIBA */
         .logo-img {
-            width: 550px; /* Volvemos al tamaño gigante que tenías */
+            width: 550px; 
             max-width: 140%; 
             height: auto;
-            margin-top: -85px; /* Tu margen original */
+            margin-top: -85px; /* Tu posición original que te gustaba */
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
         }
 
@@ -39,46 +31,19 @@
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            /* AJUSTE CLAVE: Bajamos el título de -190 a -140 para que no pise el logo */
-            margin-top: -140px; 
-            margin-bottom: 0px;
+            margin-top: -190px; /* Lo dejo como estaba originalmente */
             text-align: center;
             letter-spacing: 3px;
-            position: relative;
-            z-index: 10;
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
         }
 
-        /* 2. LOGIN CENTRADO */
-        .seccion-login {
-            flex-grow: 1; /* Ocupa todo el centro */
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Centra los cuadritos en el medio */
+        .bloque-login {
             width: 100%;
-            max-width: 400px;
             padding: 0 25px;
             box-sizing: border-box;
-            margin-top: -30px; /* Para que no quede tan abajo por el empuje del h1 */
-        }
-
-        .mensaje-error {
-            background-color: rgba(255, 0, 0, 0.2);
-            border: 1px solid #ff4d4d;
-            color: #ff4d4d;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .campo-entrada {
-            position: relative;
-            margin-bottom: 18px; 
+            margin-top: 50px; 
         }
 
         input {
@@ -95,19 +60,8 @@
             text-transform: uppercase; 
         }
 
-        /* TEXTO SUAVE DENTRO */
         input::placeholder {
             color: rgba(255, 255, 255, 0.4);
-        }
-
-        .icono-ojo {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            color: #3399ff;
-            cursor: pointer;
-            font-size: 20px;
-            z-index: 20;
         }
 
         .boton-ingresar {
@@ -120,44 +74,22 @@
             font-weight: bold;
             font-size: 18px;
             text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(51, 153, 255, 0.4);
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="seccion-superior">
-        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-        <h1>Prode Argentino</h1>
-    </div>
+    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+    <h1>Prode Argentino</h1>
 
-    <div class="seccion-login">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            {% for message in messages %}
-              <div class="mensaje-error">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-
+    <div class="bloque-login">
         <form action="/login" method="POST">
-            <div class="campo-entrada">
-                <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
-            </div>
-            <div class="campo-entrada">
-                <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
-                <span class="icono-ojo" onclick="verContrasena()">👁️</span>
-            </div>
+            <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;">
+            <input type="password" name="password" placeholder="CONTRASEÑA" required>
             <button type="submit" class="boton-ingresar">INGRESAR</button>
         </form>
     </div>
 
-    <script>
-        function verContrasena() {
-            var inputClave = document.getElementById("password");
-            inputClave.type = (inputClave.type === "password") ? "text" : "password";
-        }
-    </script>
 </body>
 </html>
