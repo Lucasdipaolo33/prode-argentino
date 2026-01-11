@@ -18,21 +18,18 @@
             overflow: hidden;
         }
 
-        /* ESTO CONTROLA EL ANCHO EN PC PARA QUE NO SE ESTIRE */
         .contenedor-principal {
             width: 100%;
-            max-width: 400px; /* Tamaño máximo tipo celular */
+            max-width: 400px; 
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* PASO: SUBIR EL LOGO BIEN ARRIBA */
         .logo-img {
             width: 550px; 
             max-width: 140%; 
             height: auto;
-            /* Lo subimos de -110px a -150px para que suba de verdad */
             margin-top: -150px; 
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
         }
@@ -41,9 +38,13 @@
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            margin-top: -190px; 
+            /* AJUSTE: Bajamos el título de -190px a -150px para despegarlo del logo */
+            margin-top: -150px; 
+            margin-bottom: 0px;
             text-align: center;
             letter-spacing: 3px;
+            position: relative;
+            z-index: 10;
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
@@ -53,7 +54,8 @@
             width: 100%;
             padding: 0 25px;
             box-sizing: border-box;
-            margin-top: 50px; 
+            /* Un pequeño ajuste aquí para que el login no se pegue al título */
+            margin-top: 60px; 
         }
 
         input {
@@ -96,8 +98,8 @@
 
         <div class="bloque-login">
             <form action="/login" method="POST">
-                <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;">
-                <input type="password" name="password" placeholder="CONTRASEÑA" required>
+                <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                <input type="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
                 <button type="submit" class="boton-ingresar">INGRESAR</button>
             </form>
         </div>
