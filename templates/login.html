@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prode Argentino - Ingreso</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .contenedor-app {
+            width: 100%;
+            max-width: 400px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .logo-img {
+            width: 550px; 
+            max-width: 140%; 
+            height: auto;
+            margin-top: -85px; 
+            filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
+        }
+
+        h1 {
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 28px;
+            margin-top: -190px;
+            margin-bottom: 0px;
+            text-align: center;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 10;
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
+            font-weight: 900;
+        }
+
+        .bloque-login {
+            width: 100%;
+            padding: 0 25px;
+            box-sizing: border-box;
+            margin-top: 80px; 
+        }
+
+        /* DISEÑO DEL CARTEL ROJO */
+        .mensaje-error {
+            background-color: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 77, 77, 0.5);
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .campo-entrada {
+            position: relative;
+            margin-bottom: 18px; 
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background-color: #121212; 
+            border: 1px solid #333;
+            border-bottom: 2px solid #3399ff;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            /* Fuerza las mayúsculas visuales */
+            text-transform: uppercase; 
+        }
+
+        .icono-ojo {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: #3399ff;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .boton-ingresar {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #0052D4, #6FB1FC);
+            border: none;      
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(51, 153, 255, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .boton-ingresar:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-app">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+        <h1>Prode Argentino</h1>
+
+        <div class="bloque-login">
+            
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="mensaje-error">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/login" method="POST">
+                <div class="campo-entrada">
+                    <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="campo-entrada">
+                    <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
+                    <span class="icono-ojo" onclick="verContrasena()">👁️</span>
+                </div>
+                <button type="submit" class="boton-ingresar">INGRESAR</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function verContrasena() {
+            var inputClave = document.getElementById("password");
+            if (inputClave.type === "password") {
+                inputClave.type = "text";
+            } else {
+                inputClave.type = "password";
+            }
+        }
+    </script>
+</body>
+</html>

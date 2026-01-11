@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prode Argentino - Panel Admin</title>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        .contenedor-app {
+            width: 100%;
+            max-width: 400px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .logo-img {
+            width: 550px; 
+            max-width: 140%; 
+            height: auto;
+            margin-top: -85px; 
+            filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
+        }
+
+        h1 {
+            font-style: italic;
+            text-transform: uppercase;
+            font-size: 28px;
+            margin-top: -190px;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 10;
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4;
+            font-weight: 900;
+        }
+
+        .caja-info {
+            width: 85%;
+            background: rgba(20, 20, 20, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #3399ff;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(51, 153, 255, 0.3);
+            margin-top: 50px;
+        }
+
+        .user-badge {
+            font-size: 18px;
+            color: #3399ff;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .nivel-tag {
+            display: inline-block;
+            background: #0052D4;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .boton-salir {
+            display: block;
+            width: 100%;
+            margin-top: 30px;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff4d4d, #b30000);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            text-transform: uppercase;
+            text-align: center;
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-app">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+        <h1>Panel Control</h1>
+
+        <div class="caja-info">
+            <span class="user-badge">BIENVENIDO: {{ usuario.upper() }}</span>
+            <div class="nivel-tag">ACCESO ADMINISTRADOR</div>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #bbb; line-height: 1.5;">
+                Has ingresado correctamente al sistema.<br>
+                Desde aquí podrás gestionar los resultados.
+            </p>
+
+            <a href="/" class="boton-salir">Cerrar Sesión</a>
+        </div>
+    </div>
+
+</body>
+</html>
