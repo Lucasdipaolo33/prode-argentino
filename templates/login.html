@@ -24,6 +24,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         .logo-img {
@@ -32,30 +33,37 @@
             height: auto;
             margin-top: -150px; 
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
+            pointer-events: none; /* Hace que el logo no moleste al tocar lo de abajo */
         }
 
         h1 {
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            /* SEPARACIÓN FINAL: Bajado de -150px a -110px para que respire */
             margin-top: -110px; 
             margin-bottom: 0px;
             text-align: center;
             letter-spacing: 3px;
             position: relative;
-            z-index: 10;
+            z-index: 1; /* Bajamos la prioridad del título */
             color: #ffffff;
             text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
             font-weight: 900;
+            pointer-events: none; /* IMPORTANTE: El título ya no bloquea los clics */
         }
 
         .bloque-login {
             width: 100%;
             padding: 0 25px;
             box-sizing: border-box;
-            /* Ajuste para que el formulario baje proporcionalmente al título */
             margin-top: 40px; 
+            position: relative;
+            z-index: 10; /* Subimos el login al frente para que puedas escribir */
+        }
+
+        .campo-entrada {
+            position: relative;
+            margin-bottom: 15px;
         }
 
         input {
@@ -76,6 +84,17 @@
             color: rgba(255, 255, 255, 0.4);
         }
 
+        /* EL OJITO VUELVE AQUÍ */
+        .icono-ojo {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: #3399ff;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 20;
+        }
+
         .boton-ingresar {
             width: 100%;
             padding: 16px;
@@ -86,7 +105,7 @@
             font-weight: bold;
             font-size: 18px;
             text-transform: uppercase;
-            margin-top: 15px;
+            margin-top: 10px;
             cursor: pointer;
         }
     </style>
@@ -99,12 +118,27 @@
 
         <div class="bloque-login">
             <form action="/login" method="POST">
-                <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
-                <input type="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
+                <div class="campo-entrada">
+                    <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="campo-entrada">
+                    <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
+                    <span class="icono-ojo" onclick="verContrasena()">👁️</span>
+                </div>
                 <button type="submit" class="boton-ingresar">INGRESAR</button>
             </form>
         </div>
     </div>
 
+    <script>
+        function verContrasena() {
+            var inputClave = document.getElementById("password");
+            if (inputClave.type === "password") {
+                inputClave.type = "text";
+            } else {
+                inputClave.type = "password";
+            }
+        }
+    </script>
 </body>
 </html>
