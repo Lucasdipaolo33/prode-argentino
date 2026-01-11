@@ -18,13 +18,22 @@
             overflow: hidden;
         }
 
-        /* PASO 2: SUBIR EL LOGO UN POCO MÁS */
+        /* ESTO CONTROLA EL ANCHO EN PC PARA QUE NO SE ESTIRE */
+        .contenedor-principal {
+            width: 100%;
+            max-width: 400px; /* Tamaño máximo tipo celular */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* PASO: SUBIR EL LOGO BIEN ARRIBA */
         .logo-img {
             width: 550px; 
             max-width: 140%; 
             height: auto;
-            /* Lo subimos de -85px a -110px */
-            margin-top: -110px; 
+            /* Lo subimos de -110px a -150px para que suba de verdad */
+            margin-top: -150px; 
             filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
         }
 
@@ -81,15 +90,17 @@
 </head>
 <body>
 
-    <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-    <h1>Prode Argentino</h1>
+    <div class="contenedor-principal">
+        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
+        <h1>Prode Argentino</h1>
 
-    <div class="bloque-login">
-        <form action="/login" method="POST">
-            <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;">
-            <input type="password" name="password" placeholder="CONTRASEÑA" required>
-            <button type="submit" class="boton-ingresar">INGRESAR</button>
-        </form>
+        <div class="bloque-login">
+            <form action="/login" method="POST">
+                <input type="text" name="usuario" placeholder="USUARIO" required style="margin-bottom: 15px;">
+                <input type="password" name="password" placeholder="CONTRASEÑA" required>
+                <button type="submit" class="boton-ingresar">INGRESAR</button>
+            </form>
+        </div>
     </div>
 
 </body>
