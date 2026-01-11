@@ -41,8 +41,8 @@
             font-style: italic;
             text-transform: uppercase;
             font-size: 28px;
-            /* SUBIMOS EL TÍTULO: Volvemos a -150px para pegarlo bien al logo */
-            margin-top: -150px; 
+            /* SUBIMOS EL TÍTULO MÁS FUERTE: de -150px a -180px */
+            margin-top: -180px; 
             margin-bottom: 0px;
             text-align: center;
             letter-spacing: 3px;
@@ -57,7 +57,8 @@
             width: 100%;
             padding: 0 25px;
             box-sizing: border-box;
-            margin-top: 55px; 
+            /* Bajamos un poquito el bloque para que no se encime al título que subimos */
+            margin-top: 80px; 
             position: relative;
             z-index: 999;
         }
@@ -79,7 +80,6 @@
             box-sizing: border-box;
             outline: none;
             text-transform: uppercase;
-            position: relative;
         }
 
         input::placeholder {
@@ -143,10 +143,10 @@
             
             if (inputClave.type === "password") {
                 inputClave.type = "text";
-                icono.innerText = "👁️"; // Al ver la clave, muestra el ojo
+                icono.innerText = "👁️"; 
             } else {
                 inputClave.type = "password";
-                icono.innerText = "🙈"; // Al ocultar, vuelve el monito
+                icono.innerText = "🙈"; 
             }
         }
     </script>
