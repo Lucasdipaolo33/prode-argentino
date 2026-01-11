@@ -154,10 +154,10 @@
             <div class="col-der">
                 <div class="saldo-wrapper">
                     <span class="saldo-label">SALDO</span>
-                    <span class="saldo-monto">$5.000</span>
+                    <span class="saldo-monto" id="display-saldo">${{ saldo }}</span>
                 </div>
                 <div class="usuario-card">
-                    <span class="usuario-nombre">LUCAS DI PAOLO</span>
+                    <span class="usuario-nombre">{{ usuario.upper() }}</span>
                 </div>
             </div>
         </div>
@@ -183,7 +183,7 @@
         <div id="overlay-confirm">
             <div class="modal">
                 <div class="modal-titulo" style="color:var(--amarillo); font-weight:900;">⚠️ GUARDAR JUGADA</div>
-                <p class="modal-txt" style="color:#fff; font-size:0.9rem; margin:15px 0;">¿Confirmás tu jugada?</p>
+                <p class="modal-txt" style="color:#fff; font-size:0.9rem; margin:15px 0;">¿Confirmás tu jugada? (Costo: $100)</p>
                 <div style="display:flex; gap:10px;">
                     <button class="btn-modal" style="flex:1; padding:12px; border-radius:8px; background:#374151; color:#fff; border:none; font-weight:900;" onclick="cerrarModales()">NO</button>
                     <button class="btn-modal" style="flex:1; padding:12px; border-radius:8px; background:var(--acento); color:#000; border:none; font-weight:900;" onclick="procesarJugada()">SÍ</button>
@@ -193,7 +193,7 @@
 
         <div id="overlay-error">
             <div class="modal">
-                <div class="modal-titulo" style="color:var(--rojo); font-weight:900;">❌ INCOMPLETO</div>
+                <div class="modal-titulo" style="color:var(--rojo); font-weight:900;">❌ ATENCIÓN</div>
                 <p class="modal-txt" id="error-msg" style="color:#fff; font-size:0.9rem; margin:15px 0;"></p>
                 <button class="btn-modal" style="width:100%; padding:12px; border-radius:8px; background:var(--rojo); color:#fff; border:none; font-weight:900;" onclick="cerrarModales()">CORREGIR</button>
             </div>
@@ -201,8 +201,8 @@
     </div>
 
     <script>
-        // MOTOR DE AUDIO (Sintetizador)
         let audioCtx = null;
+        const nombreUsuario = "{{ usuario }}";
 
         function iniciarAudio() {
             if (!audioCtx) {
@@ -212,45 +212,22 @@
 
         function sonarClick() {
             iniciarAudio();
-            
-            // Creamos 3 osciladores en lugar de 2 para triplicar la presión sonora
             const osc1 = audioCtx.createOscillator();
             const osc2 = audioCtx.createOscillator();
-            const osc3 = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
 
-            // Onda cuadrada: es la que más fuerte suena en parlantes pequeños
             osc1.type = 'square'; 
             osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
             osc1.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
 
-            // Onda triangular para darle cuerpo
-            osc2.type = 'triangle';
-            osc2.frequency.setValueAtTime(880, audioCtx.currentTime);
-            osc2.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.1);
-
-            // Onda senoidal aguda para el "clic" inicial
-            osc3.type = 'sine';
-            osc3.frequency.setValueAtTime(1500, audioCtx.currentTime);
-            osc3.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.05);
-
-            // AMPLIFICACIÓN: Seteamos la ganancia por encima de 1.0 para forzar el volumen
-            // Esto actúa como un amplificador
-            gain.gain.setValueAtTime(2.0, audioCtx.currentTime); 
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.12);
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime); 
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
 
             osc1.connect(gain);
-            osc2.connect(gain);
-            osc3.connect(gain);
             gain.connect(audioCtx.destination);
 
             osc1.start();
-            osc2.start();
-            osc3.start();
-            
-            osc1.stop(audioCtx.currentTime + 0.12);
-            osc2.stop(audioCtx.currentTime + 0.12);
-            osc3.stop(audioCtx.currentTime + 0.12);
+            osc1.stop(audioCtx.currentTime + 0.1);
         }
 
         function actualizarTiempo() {
@@ -270,7 +247,7 @@
         }, 1000);
 
         function votar(el) {
-            sonarClick(); // Ejecutar sonido sintético
+            sonarClick();
             const fila = el.closest('.fila');
             fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
@@ -295,7 +272,7 @@
                 }
             });
             if (faltantes > 0) {
-                document.getElementById('error-msg').innerText = "Te faltan " + faltantes + " partidos.";
+                document.getElementById('error-msg').innerText = "Te faltan elegir " + faltantes + " resultados.";
                 document.getElementById('overlay-error').style.display = 'flex';
             } else {
                 document.getElementById('overlay-confirm').style.display = 'flex';
@@ -314,19 +291,29 @@
                 const btn = f.querySelector('.btn-lev.active span');
                 if(btn) jugada[index + 1] = btn.innerText;
             });
+
             try {
                 const response = await fetch('/guardar_jugada', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuario: "LUCAS DI PAOLO", predicciones: jugada })
+                    body: JSON.stringify({ usuario: nombreUsuario, predicciones: jugada })
                 });
+                
+                const data = await response.json();
+
                 if (response.ok) {
                     cerrarModales();
-                    alert("¡Jugada enviada!");
+                    alert("¡JUGADA GUARDADA EXITOSAMENTE!");
+                    // Actualizamos el saldo en pantalla con lo que nos devuelve el servidor
+                    document.getElementById('display-saldo').innerText = "$" + data.nuevo_saldo;
                     limpiarCarton();
+                } else {
+                    cerrarModales();
+                    document.getElementById('error-msg').innerText = data.mensaje;
+                    document.getElementById('overlay-error').style.display = 'flex';
                 }
             } catch (error) {
-                alert("Error al enviar.");
+                alert("Error de conexión con el servidor.");
             }
         }
     </script>
