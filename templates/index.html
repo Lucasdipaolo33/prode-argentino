@@ -1,320 +1,369 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="notranslate" translate="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
     <title>PRODE ARGENTINO</title>
-    <link rel="icon" href="https://img.icons8.com/emoji/48/soccer-ball-emoji.png" type="image/png">
-    <link rel="apple-touch-icon" href="https://img.icons8.com/emoji/48/soccer-ball-emoji.png">
-
     <style>
         :root {
-            --fondo: #050505;
-            --tarjeta: #111418;
-            --tarjeta-clara: #1a1e24;
+            --fondo: #000000;
+            --tarjeta: rgba(15, 20, 25, 0.95);
+            --azul-neon: #3399ff;
             --acento: #00ff88;
-            --azul-metal: #3b82f6;
-            --amarillo: #fbbf24;
-            --rojo: #ff3333;
+            --error: #ff4444;
             --texto: #ffffff;
+            --blanco-badge: #f0f0f0;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        html, body {
-            background-color: #000;
+        body {
+            background-color: var(--fondo);
             color: var(--texto);
             font-family: 'Segoe UI', Roboto, sans-serif;
             margin: 0; padding: 0;
-            min-height: 100vh; width: 100vw;
-            overflow-x: hidden;
-            overflow-y: auto;
             display: flex; justify-content: center;
         }
 
         .app-container {
             width: 100%;
-            max-width: 480px;
-            min-height: 100vh;
+            max-width: 500px;
             background-color: var(--fondo);
             display: flex;
             flex-direction: column;
+            border: 1px solid #1e293b;
+            min-height: 100vh;
             position: relative;
         }
 
-        /* HEADER */
+        /* HEADER ACTUALIZADO */
         .header {
-            width: 100%; min-height: 115px;
-            padding: 10px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #1e293b;
-            background: linear-gradient(180deg, #0f172a 0%, #000 100%);
-            flex-shrink: 0;
-            position: sticky; top: 0; z-index: 100;
-        }
-
-        .col-izq { display: flex; flex-direction: column; gap: 1px; min-width: 80px; }
-        .txt-fecha { color: #fff; font-weight: 800; font-size: 0.6rem; opacity: 0.7; }
-        .num-fecha { color: #fff; font-weight: 900; font-size: 0.75rem; letter-spacing: 1px; }
-        .cierre-box { margin-top: 4px; display: flex; flex-direction: column; background: rgba(255, 51, 51, 0.1); padding: 3px 6px; border-radius: 6px; border-left: 2px solid var(--rojo); }
-        .cierre-label { color: var(--rojo); font-size: 0.5rem; font-weight: 900; }
-        #countdown { color: var(--rojo); font-size: 0.7rem; font-weight: 900; }
-
-        .col-centro { display: flex; gap: 4px; }
-        .puntaje-card { 
-            background: rgba(30, 41, 59, 0.8); 
-            border: 1.5px solid var(--azul-metal); 
-            padding: 6px 4px; 
-            border-radius: 10px; 
-            text-align: center; 
-            min-width: 65px;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
-        }
-        .puntaje-label { display: block; font-size: 0.45rem; color: var(--amarillo); font-weight: 900; text-transform: uppercase; margin-bottom: 2px;}
-        .puntaje-valor { font-size: 1.1rem; font-weight: 900; color: #ffffff; line-height: 1;}
-
-        .col-der { display: flex; flex-direction: column; gap: 4px; min-width: 90px; }
-        .saldo-wrapper { display: flex; align-items: center; justify-content: center; gap: 4px; background: #000; border: 1px solid var(--azul-metal); padding: 3px; border-radius: 6px; }
-        .saldo-label { font-size: 0.55rem; font-weight: 900; color: #fff; }
-        .saldo-monto { color: var(--acento); font-weight: 900; font-size: 0.75rem; }
-        .usuario-card { background: #1e293b; border-radius: 4px; padding: 3px; text-align: center; }
-        .usuario-nombre { color: #fff; font-size: 0.5rem; font-weight: 800; }
-
-        /* LISTADO */
-        .partidos-list { 
-            flex: 1;
             width: 100%;
+            padding: 15px;
             display: flex;
-            flex-direction: column; 
-            padding: 10px 0;
-            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+            border-bottom: 3px solid var(--azul-neon);
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 15px rgba(51, 153, 255, 0.2);
         }
 
+        .btn-menu-top {
+            background: var(--azul-neon);
+            color: #000; border: none;
+            padding: 8px 12px; border-radius: 8px;
+            font-weight: 900; font-size: 0.7rem;
+            text-transform: uppercase; cursor: pointer;
+            width: 75px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; opacity: 0.9; }
+        .txt-saldo { color: var(--acento); font-weight: 900; font-size: 1.4rem; margin-top: 2px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+
+        /* Badge Fecha 1 en Blanco */
+        .fecha-badge {
+            background: var(--blanco-badge);
+            color: #000; font-size: 0.7rem; font-weight: 900;
+            padding: 8px 5px; border-radius: 8px;
+            width: 75px; text-align: center;
+            box-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        /* MENU OVERLAY */
+        #menu-overlay, #historial-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .menu-title { color: var(--azul-neon); font-size: 1.5rem; font-weight: 900; margin-bottom: 30px; letter-spacing: 2px; }
+        .menu-grid { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 12px; }
+
+        .btn-menu-item {
+            width: 100%; padding: 18px; background: #111; border: 1px solid #333;
+            border-radius: 12px; color: #fff; font-weight: 700;
+            text-transform: uppercase; font-size: 0.9rem; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .btn-cerrar-menu {
+            margin-top: 40px; background: var(--error); color: #fff;
+            border: none; padding: 15px 40px; border-radius: 50px;
+            font-weight: 900; cursor: pointer; text-transform: uppercase;
+        }
+
+        /* PARTIDOS */
+        .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; background-color: #000; }
         .fila { 
-            width: 94%;
-            margin: 0 auto;
-            min-height: 45px;
-            display: flex; align-items: center; justify-content: space-between; 
-            padding: 5px 10px; border-radius: 12px; 
-            border: 1px solid rgba(59, 130, 246, 0.12); 
-            flex-shrink: 0;
+            background: rgba(51, 153, 255, 0.05); border: 1px solid #2d3748; 
+            border-radius: 15px; padding: 12px 10px; display: flex; align-items: center; justify-content: space-between;
         }
-        .fila:nth-child(odd) { background: var(--tarjeta); }
-        .fila:nth-child(even) { background: var(--tarjeta-clara); }
-
-        .equipo { width: 35%; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; text-align: center; line-height: 1.1; }
-        .controles { display: flex; gap: 8px; width: 30%; justify-content: center; }
-
-        .btn-lev { width: 32px; height: 32px; background: #000; border: 1px solid #333; border-radius: 50%; color: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.7rem; cursor: pointer; transition: 0.2s; }
-        .btn-lev.active { border-color: var(--acento); color: var(--acento); box-shadow: 0 0 8px rgba(0, 255, 136, 0.2); background: #0a1a10; }
-        .btn-lev.active::after { content: '⚽'; font-size: 0.7rem; }
-        .btn-lev.active span { display: none; }
+        .equipo-nombre { width: 32%; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: #fff; }
+        .controles { display: flex; gap: 6px; width: 130px; justify-content: center; }
+        .btn-lev { width: 36px; height: 36px; background: #000; border: 1px solid #444; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; }
+        .btn-lev.active { background: var(--acento); color: #000; box-shadow: 0 0 10px var(--acento); border-color: #fff; }
 
         /* FOOTER */
-        .footer { 
-            width: 100%; height: 80px; 
-            display: flex; justify-content: center; align-items: center; 
-            background: #000; flex-shrink: 0;
-            border-top: 1px solid #1e293b;
-            margin-top: auto;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .btn-confirmar { width: 90%; height: 48px; background: linear-gradient(135deg, #1e40af, #3b82f6); border: none; border-radius: 50px; color: white; font-weight: 900; text-transform: uppercase; font-size: 0.9rem; cursor: pointer; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+        .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
+        .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; }
 
         /* MODALES */
-        #overlay-confirm, #overlay-error {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(4px);
-            display: none; justify-content: center; align-items: center; z-index: 9999;
+        #overlay-modal, #imagen-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 7000;
+            justify-content: center; align-items: center; padding: 20px;
         }
-        .modal { background: #111827; width: 85%; padding: 25px; border-radius: 20px; border: 2px solid var(--azul-metal); text-align: center; }
+        .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
+        #carton-imagen-display { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
+
+        /* TICKET RENDER COMPACTO */
+        #ticket-render {
+            position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
+            padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
 
+    <div id="ticket-render" class="notranslate" translate="no">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px;">
+            <h2 style="margin: 0; font-size: 22px; letter-spacing: 1px;">PRODE ARGENTINO</h2>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
+                <span style="background: #000; color: #fff; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">FECHA 1</span>
+                <span style="border: 1.5px solid #000; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">VALOR: $100</span>
+            </div>
+            <p id="t-id" style="margin: 8px 0 0 0; font-size: 12px; font-weight: bold; font-family: monospace;"></p>
+        </div>
+        
+        <div style="font-size: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #aaa; padding-bottom: 5px;">
+            <span><b>USER:</b> <span id="t-user"></span></span>
+            <span id="t-fecha"></span>
+        </div>
+
+        <div id="t-partidos"></div>
+
+        <div style="text-align: center; border-top: 1px solid #000; margin-top: 15px; padding-top: 10px; font-size: 10px; font-weight: 900; letter-spacing: 1px;">
+            *** COMPROBANTE OFICIAL ***
+        </div>
+    </div>
+
+    <div id="menu-overlay">
+        <div class="menu-title">OPCIONES</div>
+        <div class="menu-grid">
+            <button class="btn-menu-item" onclick="abrirHistorial()">📸 MIS COMPROBANTES <span>></span></button>
+            <button class="btn-menu-item">💰 CARGAR SALDO <span>></span></button>
+        </div>
+        <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
+    </div>
+
+    <div id="historial-overlay">
+        <h2 style="color:var(--azul-neon); margin-bottom:20px;">MIS CARTONES</h2>
+        <div id="lista-cartones" style="width:100%; max-width:400px; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column; gap:15px; padding:10px;"></div>
+        <button onclick="document.getElementById('historial-overlay').style.display='none'" class="btn-cerrar-menu">CERRAR</button>
+    </div>
+
+    <div id="imagen-modal-overlay">
+        <div style="background:#000; padding:15px; border:2px solid var(--acento); border-radius:20px; width:100%; max-width:380px; text-align:center;">
+            <img id="carton-imagen-display" src="">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button onclick="descargarImagen()" style="background:var(--acento); padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">DESCARGAR</button>
+                <button onclick="compartirWhatsApp()" style="background:#25D366; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18" height="18"> COMPARTIR
+                </button>
+                <button onclick="cerrarModalImagen()" style="grid-column:span 2; background:#333; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">CERRAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay-modal">
+        <div class="modal">
+            <div id="m-titulo" style="font-weight: 900; font-size: 1.3rem; margin-bottom: 10px; color:#fff;"></div>
+            <div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div>
+            <div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div>
+        </div>
+    </div>
+
     <div class="app-container">
         <div class="header">
-            <div class="col-izq">
-                <span class="txt-fecha" id="fecha">--/--/----</span>
-                <span class="num-fecha">FECHA 1</span>
-                <div class="cierre-box">
-                    <span class="cierre-label">CIERRE</span>
-                    <span id="countdown">0d 00:00:00</span>
-                </div>
+            <button class="btn-menu-top" onclick="toggleMenu()">MENU</button>
+            <div class="user-info">
+                <div class="usuario-txt">{{ usuario.upper() }}</div>
+                <div id="display-saldo" class="txt-saldo"></div>
             </div>
-            <div class="col-centro">
-                <div class="puntaje-card">
-                    <span class="puntaje-label">FECHA</span>
-                    <span class="puntaje-valor">12</span>
-                </div>
-                <div class="puntaje-card">
-                    <span class="puntaje-label">GLOBAL</span>
-                    <span class="puntaje-valor">145</span>
-                </div>
-            </div>
-            <div class="col-der">
-                <div class="saldo-wrapper">
-                    <span class="saldo-label">SALDO</span>
-                    <span class="saldo-monto" id="display-saldo">${{ saldo }}</span>
-                </div>
-                <div class="usuario-card">
-                    <span class="usuario-nombre">{{ usuario.upper() }}</span>
-                </div>
-            </div>
+            <div class="fecha-badge">FECHA 1</div>
         </div>
 
         <div class="partidos-list">
             {% for p in partidos %}
             <div class="fila">
-                <div class="equipo">{{ p.local }}</div>
+                <div class="equipo-nombre local">{{ p.local }}</div>
                 <div class="controles">
-                    <div class="btn-lev" onclick="votar(this)"><span>L</span></div>
-                    <div class="btn-lev" onclick="votar(this)"><span>E</span></div>
-                    <div class="btn-lev" onclick="votar(this)"><span>V</span></div>
+                    <div class="btn-lev" onclick="votar(this)">L</div>
+                    <div class="btn-lev" onclick="votar(this)">E</div>
+                    <div class="btn-lev" onclick="votar(this)">V</div>
                 </div>
-                <div class="equipo">{{ p.visitante }}</div>
+                <div class="equipo-nombre visitante">{{ p.visitante }}</div>
             </div>
             {% endfor %}
         </div>
 
         <div class="footer">
-            <button class="btn-confirmar" onclick="validarFormulario()">Guardar Jugada</button>
-        </div>
-
-        <div id="overlay-confirm">
-            <div class="modal">
-                <div class="modal-titulo" style="color:var(--amarillo); font-weight:900;">⚠️ GUARDAR JUGADA</div>
-                <p class="modal-txt" style="color:#fff; font-size:0.9rem; margin:15px 0;">¿Confirmás tu jugada? (Costo: $100)</p>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-modal" style="flex:1; padding:12px; border-radius:8px; background:#374151; color:#fff; border:none; font-weight:900;" onclick="cerrarModales()">NO</button>
-                    <button class="btn-modal" style="flex:1; padding:12px; border-radius:8px; background:var(--acento); color:#000; border:none; font-weight:900;" onclick="procesarJugada()">SÍ</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="overlay-error">
-            <div class="modal">
-                <div class="modal-titulo" style="color:var(--rojo); font-weight:900;">❌ ATENCIÓN</div>
-                <p class="modal-txt" id="error-msg" style="color:#fff; font-size:0.9rem; margin:15px 0;"></p>
-                <button class="btn-modal" style="width:100%; padding:12px; border-radius:8px; background:var(--rojo); color:#fff; border:none; font-weight:900;" onclick="cerrarModales()">CORREGIR</button>
-            </div>
+            <button class="btn-confirmar" onclick="intentarGuardar()">GUARDAR JUGADA</button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        let audioCtx = null;
         const nombreUsuario = "{{ usuario }}";
+        const saldoInicial = {{ saldo }};
+        let ultimaImagenCarton = '';
 
-        function iniciarAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
+        document.getElementById('display-saldo').innerText = "$" + saldoInicial.toLocaleString('es-AR');
+
+        function toggleMenu() {
+            const menu = document.getElementById('menu-overlay');
+            menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
-
-        function sonarClick() {
-            iniciarAudio();
-            const osc1 = audioCtx.createOscillator();
-            const osc2 = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-
-            osc1.type = 'square'; 
-            osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
-            osc1.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-
-            gain.gain.setValueAtTime(0.5, audioCtx.currentTime); 
-            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
-
-            osc1.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            osc1.start();
-            osc1.stop(audioCtx.currentTime + 0.1);
-        }
-
-        function actualizarTiempo() {
-            document.getElementById('fecha').innerText = new Date().toLocaleDateString('es-AR');
-        }
-        actualizarTiempo();
-
-        const fechaCierre = new Date().getTime() + (2 * 24 * 60 * 60 * 1000); 
-        setInterval(function() {
-            const ahora = new Date().getTime();
-            const distancia = fechaCierre - ahora;
-            const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-            const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-            document.getElementById("countdown").innerHTML = dias + "d " + (horas < 10 ? "0" : "") + horas + ":" + (minutos < 10 ? "0" : "") + minutos + ":" + (segundos < 10 ? "0" : "") + segundos;
-        }, 1000);
 
         function votar(el) {
-            sonarClick();
             const fila = el.closest('.fila');
             fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
-            fila.style.borderColor = "rgba(0, 255, 136, 0.4)";
         }
 
-        function limpiarCarton() {
-            const filas = document.querySelectorAll('.fila');
-            filas.forEach(f => {
-                f.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
-                f.style.borderColor = "rgba(59, 130, 246, 0.12)";
-            });
-        }
-
-        function validarFormulario() {
-            const filas = document.querySelectorAll('.fila');
-            let faltantes = 0;
-            filas.forEach(f => {
-                if (!f.querySelector('.btn-lev.active')) {
-                    f.style.borderColor = "var(--rojo)";
-                    faltantes++;
-                }
-            });
-            if (faltantes > 0) {
-                document.getElementById('error-msg').innerText = "Te faltan elegir " + faltantes + " resultados.";
-                document.getElementById('overlay-error').style.display = 'flex';
-            } else {
-                document.getElementById('overlay-confirm').style.display = 'flex';
+        function mostrarModal(titulo, mensaje, tipo, accion) {
+            const modalOverlay = document.getElementById('overlay-modal');
+            document.getElementById('m-titulo').innerText = titulo;
+            document.getElementById('m-mensaje').innerText = mensaje;
+            const cajaBotones = document.getElementById('m-botones');
+            cajaBotones.innerHTML = '';
+            modalOverlay.style.display = 'flex';
+            const btnOk = document.createElement('button');
+            btnOk.innerText = tipo === 'confirmar' ? 'SÍ, GUARDAR' : 'OK';
+            btnOk.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:var(--azul-neon); cursor:pointer;";
+            btnOk.onclick = () => { modalOverlay.style.display = 'none'; if(accion) accion(); };
+            if(tipo === 'confirmar') {
+                const btnCan = document.createElement('button');
+                btnCan.innerText = 'NO';
+                btnCan.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:#333; color:#fff; cursor:pointer;";
+                btnCan.onclick = () => modalOverlay.style.display = 'none';
+                cajaBotones.appendChild(btnCan);
             }
+            cajaBotones.appendChild(btnOk);
         }
 
-        function cerrarModales() {
-            document.getElementById('overlay-confirm').style.display = 'none';
-            document.getElementById('overlay-error').style.display = 'none';
+        function intentarGuardar() {
+            const faltantes = document.querySelectorAll('.fila:not(:has(.active))').length;
+            if (faltantes > 0) mostrarModal("⚠️ ESPERA", "Completá todos los partidos.", "aviso");
+            else mostrarModal("⚽ CONFIRMAR", "¿Guardar jugada por $100?", "confirmar", procesarJugada);
         }
 
         async function procesarJugada() {
-            const filas = document.querySelectorAll('.fila');
-            const jugada = {};
-            filas.forEach((f, index) => {
-                const btn = f.querySelector('.btn-lev.active span');
-                if(btn) jugada[index + 1] = btn.innerText;
+            let resumen = ""; let htmlTicket = "";
+            document.querySelectorAll('.fila').forEach((f, i) => {
+                const local = f.querySelector('.local').innerText;
+                const visitante = f.querySelector('.visitante').innerText;
+                const e = f.querySelector('.active').innerText;
+                resumen += `${i+1}:${e} `;
+                htmlTicket += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="width:35%; font-weight:900; font-size:12px; text-transform:uppercase;">${local}</span>
+                    <div style="width:30%; display:flex; justify-content:center; gap:4px;">
+                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='L'?'X':''}</div>
+                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='E'?'X':''}</div>
+                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='V'?'X':''}</div>
+                    </div>
+                    <span style="width:35%; font-weight:900; font-size:12px; text-transform:uppercase; text-align:right;">${visitante}</span>
+                </div>`;
             });
 
-            try {
-                const response = await fetch('/guardar_jugada', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuario: nombreUsuario, predicciones: jugada })
-                });
-                
-                const data = await response.json();
+            const response = await fetch('/guardar_jugada', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuario: nombreUsuario, predicciones: resumen })
+            });
+            const res = await response.json();
 
-                if (response.ok) {
-                    cerrarModales();
-                    alert("¡JUGADA GUARDADA EXITOSAMENTE!");
-                    // Actualizamos el saldo en pantalla con lo que nos devuelve el servidor
-                    document.getElementById('display-saldo').innerText = "$" + data.nuevo_saldo;
-                    limpiarCarton();
-                } else {
-                    cerrarModales();
-                    document.getElementById('error-msg').innerText = data.mensaje;
-                    document.getElementById('overlay-error').style.display = 'flex';
-                }
-            } catch (error) {
-                alert("Error de conexión con el servidor.");
+            if (response.ok) {
+                document.getElementById('t-id').innerText = "TICKET #" + res.id_ticket;
+                document.getElementById('t-user').innerText = nombreUsuario.toUpperCase();
+                document.getElementById('t-fecha').innerText = res.fecha;
+                document.getElementById('t-partidos').innerHTML = htmlTicket;
+
+                html2canvas(document.getElementById('ticket-render'), { scale: 3 }).then(canvas => {
+                    const imageData = canvas.toDataURL('image/png');
+                    fetch('/guardar_imagen_carton', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ usuario: nombreUsuario, imageData: imageData })
+                    }).then(r => r.json()).then(data => {
+                        ultimaImagenCarton = data.imageUrl;
+                        document.getElementById('carton-imagen-display').src = imageData;
+                        document.getElementById('imagen-modal-overlay').style.display = 'flex';
+                        document.getElementById('display-saldo').innerText = "$" + res.saldo_nuevo.toLocaleString('es-AR');
+                    });
+                });
+            } else {
+                mostrarModal("❌ ERROR", res.mensaje, "aviso");
             }
+        }
+
+        async function abrirHistorial() {
+            const lista = document.getElementById('lista-cartones');
+            lista.innerHTML = '<p style="text-align:center;">Buscando...</p>';
+            document.getElementById('historial-overlay').style.display = 'flex';
+            toggleMenu();
+
+            const r = await fetch(`/mis_comprobantes/${nombreUsuario}`);
+            const d = await r.json();
+            if(d.fotos && d.fotos.length > 0) {
+                lista.innerHTML = '';
+                d.fotos.reverse().forEach((url, i) => {
+                    const card = document.createElement('div');
+                    card.style.cssText = "background:#111; border:1px solid #333; padding:10px; border-radius:15px; text-align:center;";
+                    card.innerHTML = `
+                        <div style="color:#aaa; font-size:11px; margin-bottom:5px;">JUGADA #${d.fotos.length - i}</div>
+                        <img src="${url}" style="width:100%; border-radius:5px; margin-bottom:10px; cursor:pointer;" onclick="ampliar('${url}')">
+                        <button onclick="ampliar('${url}')" style="background:var(--azul-neon); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">VER / COMPARTIR</button>
+                    `;
+                    lista.appendChild(card);
+                });
+            } else {
+                lista.innerHTML = '<p style="text-align:center;">No hay jugadas aún.</p>';
+            }
+        }
+
+        function ampliar(url) {
+            ultimaImagenCarton = url;
+            document.getElementById('carton-imagen-display').src = url;
+            document.getElementById('imagen-modal-overlay').style.display = 'flex';
+        }
+
+        function cerrarModalImagen() { 
+            document.getElementById('imagen-modal-overlay').style.display = 'none'; 
+            location.reload(); 
+        }
+
+        function descargarImagen() {
+            const link = document.createElement('a');
+            link.href = document.getElementById('carton-imagen-display').src;
+            link.download = `prode_argentino_${nombreUsuario}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function compartirWhatsApp() {
+            const msg = encodeURIComponent("¡Mirá mi jugada del Prode Argentino! ⚽ Envíame un mensaje si querés jugar.");
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
         }
     </script>
 </body>
