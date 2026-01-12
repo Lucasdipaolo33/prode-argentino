@@ -6,16 +6,9 @@
     <title>Prode Argentino - Ingreso</title>
     
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}?v=1">
-
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.png') }}?v=1">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Prode Arg">
-
-    <meta property="og:title" content="Prode Argentino">
-    <meta property="og:image" content="{{ url_for('static', filename='logo.png') }}?v=1">
-    <meta property="og:image:width" content="500">
-    <meta property="og:image:height" content="500">
-    <meta property="og:type" content="website">
 
     <style>
         body {
@@ -84,8 +77,6 @@
             margin-bottom: 15px;
             text-align: center;
             font-weight: bold;
-            position: relative;
-            z-index: 1005;
         }
 
         .campo-entrada {
@@ -104,7 +95,6 @@
             font-size: 16px;
             box-sizing: border-box;
             outline: none;
-            text-transform: uppercase;
         }
 
         input::placeholder {
@@ -154,13 +144,13 @@
               {% endif %}
             {% endwith %}
 
-            <form action="/login" method="POST">
+            <form action="/verificar_login" method="POST">
                 <div class="campo-entrada">
-                    <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off">
                 </div>
                 
                 <div class="campo-entrada">
-                    <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required oninput="this.value = this.value.toUpperCase()">
+                    <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required>
                     <span class="icono-ojo" id="toggle-ojo" onclick="verContrasena()">🙈</span>
                 </div>
 
@@ -185,4 +175,3 @@
     </script>
 </body>
 </html>
-
