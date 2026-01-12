@@ -8,13 +8,13 @@ app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta_super_segura' 
 
 # --- CONEXIÓN A MONGODB ATLAS ---
-# Usamos el link que me pasaste
-MONGO_URI = "mongodb+srv://admin:K57362930k@cluster0.zbwrn8k.mongodb.net/?retryWrites=true&w=majority"
+# Intenta leer la clave secreta desde Render, si no, usa el link directo
+MONGO_URI = os.environ.get("MONGO_URI", "mongodb+srv://admin:K57362930k@cluster0.zbwrn8k.mongodb.net/?retryWrites=true&w=majority")
 client = MongoClient(MONGO_URI)
-db_mongo = client['prode_db'] # Nombre de la base de datos
-usuarios_col = db_mongo['usuarios'] # Colección de usuarios
+db_mongo = client['prode_db']
+usuarios_col = db_mongo['usuarios']
+jugadas_col = db_mongo['jugadas'] # <--- NUEVO: Aquí guardaremos lo que antes iba al .txt
 
-# Lista fija de partidos (puedes moverla a la base de datos después si quieres)
 PARTIDOS = [
     {'local': 'RIVER PLATE', 'visitante': 'BOCA JUNIORS'},
     {'local': 'RACING', 'visitante': 'INDEPENDIENTE'},
@@ -37,8 +37,6 @@ UPLOAD_FOLDER = os.path.join('static', 'comprobantes')
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
-# --- RUTAS ---
-
 @app.route('/')
 def login_page():
     if 'usuario' in session:
@@ -47,8 +45,8 @@ def login_page():
 
 @app.route('/verificar_login', methods=['POST'])
 def verificar_login():
-    user_input = request.form.get('usuario').upper() # Normalizamos a mayúsculas
-    pass_input = request.form.get('password')
+    user_input = request.form.get('usuario').upper()
+    pass_input = request.form.get('password').upper() # Normalizamos todo a MAYÚSCULAS
     
     user_doc = usuarios_col.find_one({'usuario': user_input})
     
@@ -64,9 +62,12 @@ def home():
         return redirect(url_for('login_page'))
     
     user_doc = usuarios_col.find_one({'usuario': session['usuario']})
+    # Si por algún motivo no hay saldo en la DB, ponemos 0
+    saldo_actual = user_doc.get('saldo', 0) if user_doc else 0
+    
     return render_template('index.html', 
                            usuario=session['usuario'], 
-                           saldo=user_doc['saldo'], 
+                           saldo=saldo_actual, 
                            partidos=PARTIDOS)
 
 @app.route('/logout')
@@ -80,14 +81,23 @@ def guardar_jugada():
     usuario = session.get('usuario')
     
     user_doc = usuarios_col.find_one({'usuario': usuario})
-    if not user_doc or user_doc['saldo'] < 100:
+    if not user_doc or user_doc.get('saldo', 0) < 100:
         return jsonify({'mensaje': 'Saldo insuficiente'}), 400
     
     id_ticket = os.urandom(3).hex().upper()
     fecha_hora = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     
-    # Descontar saldo en MongoDB
+    # 1. Descontar saldo
     usuarios_col.update_one({'usuario': usuario}, {'$inc': {'saldo': -100}})
+    
+    # 2. GUARDAR EN MONGODB (Lo que antes era el .txt)
+    nueva_jugada = {
+        'id_ticket': id_ticket,
+        'usuario': usuario,
+        'fecha': fecha_hora,
+        'predicciones': data.get('predicciones')
+    }
+    jugadas_col.insert_one(nueva_jugada)
     
     return jsonify({
         'mensaje': 'OK',
@@ -112,22 +122,11 @@ def guardar_imagen_carton():
             f.write(decoded)
 
         url_final = f"/static/comprobantes/{filename}"
-        
-        # Guardar link en MongoDB
         usuarios_col.update_one({'usuario': usuario}, {'$push': {'imagenes_cartones': url_final}})
         
         return jsonify({'mensaje': 'Imagen guardada', 'imageUrl': url_final}), 200
     except Exception as e:
         return jsonify({'mensaje': str(e)}), 500
-
-@app.route('/mis_comprobantes/<usuario>')
-def mis_comprobantes(usuario):
-    if session.get('usuario') != usuario.upper():
-        return jsonify({'fotos': []}), 403
-    
-    user_doc = usuarios_col.find_one({'usuario': usuario.upper()})
-    fotos = user_doc.get('imagenes_cartones', []) if user_doc else []
-    return jsonify({'fotos': fotos})
 
 if __name__ == '__main__':
     app.run(debug=True)
