@@ -37,7 +37,6 @@
             position: relative;
         }
 
-        /* HEADER ACTUALIZADO */
         .header {
             width: 100%;
             padding: 15px;
@@ -69,7 +68,6 @@
         .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; opacity: 0.9; }
         .txt-saldo { color: var(--acento); font-weight: 900; font-size: 1.4rem; margin-top: 2px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
 
-        /* Badge Fecha 1 en Blanco */
         .fecha-badge {
             background: var(--blanco-badge);
             color: #000; font-size: 0.7rem; font-weight: 900;
@@ -78,7 +76,6 @@
             box-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
 
-        /* MENU OVERLAY */
         #menu-overlay, #historial-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
@@ -101,7 +98,6 @@
             font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
 
-        /* PARTIDOS */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; background-color: #000; }
         .fila { 
             background: rgba(51, 153, 255, 0.05); border: 1px solid #2d3748; 
@@ -112,11 +108,9 @@
         .btn-lev { width: 36px; height: 36px; background: #000; border: 1px solid #444; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; }
         .btn-lev.active { background: var(--acento); color: #000; box-shadow: 0 0 10px var(--acento); border-color: #fff; }
 
-        /* FOOTER */
         .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
         .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; }
 
-        /* MODALES */
         #overlay-modal, #imagen-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 7000;
@@ -125,7 +119,6 @@
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
         #carton-imagen-display { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
 
-        /* TICKET RENDER COMPACTO */
         #ticket-render {
             position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
             padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
@@ -161,6 +154,7 @@
         <div class="menu-grid">
             <button class="btn-menu-item" onclick="abrirHistorial()">📸 MIS COMPROBANTES <span>></span></button>
             <button class="btn-menu-item">💰 CARGAR SALDO <span>></span></button>
+            <button class="btn-menu-item" onclick="location.href='/logout'" style="color: var(--error);">🚪 CERRAR SESIÓN <span>></span></button>
         </div>
         <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
     </div>
@@ -196,7 +190,7 @@
         <div class="header">
             <button class="btn-menu-top" onclick="toggleMenu()">MENU</button>
             <div class="user-info">
-                <div class="usuario-txt">{{ usuario.upper() }}</div>
+                <div class="usuario-txt">{{ usuario }}</div>
                 <div id="display-saldo" class="txt-saldo"></div>
             </div>
             <div class="fecha-badge">FECHA 1</div>
@@ -223,6 +217,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
+        // Traemos las variables desde Python
         const nombreUsuario = "{{ usuario }}";
         const saldoInicial = {{ saldo }};
         let ultimaImagenCarton = '';
@@ -285,10 +280,11 @@
                 </div>`;
             });
 
+            // Enviamos jugada al servidor
             const response = await fetch('/guardar_jugada', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usuario: nombreUsuario, predicciones: resumen })
+                body: JSON.stringify({ predicciones: resumen }) // Ya no mandamos usuario, el servidor lo sabe por la sesión
             });
             const res = await response.json();
 
@@ -303,7 +299,7 @@
                     fetch('/guardar_imagen_carton', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ usuario: nombreUsuario, imageData: imageData })
+                        body: JSON.stringify({ imageData: imageData })
                     }).then(r => r.json()).then(data => {
                         ultimaImagenCarton = data.imageUrl;
                         document.getElementById('carton-imagen-display').src = imageData;
@@ -362,7 +358,7 @@
         }
 
         function compartirWhatsApp() {
-            const msg = encodeURIComponent("¡Mirá mi jugada del Prode Argentino! ⚽ Envíame un mensaje si querés jugar.");
+            const msg = encodeURIComponent("¡Mirá mi jugada del Prode Argentino! ⚽");
             window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
         }
     </script>
