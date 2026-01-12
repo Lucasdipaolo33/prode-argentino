@@ -58,10 +58,7 @@
             width: 75px;
         }
 
-        .user-info {
-            display: flex; flex-direction: column; align-items: center; flex-grow: 1;
-        }
-
+        .user-info { display: flex; flex-direction: column; align-items: center; flex-grow: 1; }
         .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; opacity: 0.9; }
         .txt-saldo { color: var(--acento); font-weight: 900; font-size: 1.4rem; margin-top: 2px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
 
@@ -79,22 +76,15 @@
         }
 
         .menu-title { color: var(--azul-neon); font-size: 1.5rem; font-weight: 900; margin-bottom: 30px; letter-spacing: 2px; }
-        .menu-grid { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 12px; }
-
         .btn-menu-item {
             width: 100%; padding: 18px; background: #111; border: 1px solid #333;
             border-radius: 12px; color: #fff; font-weight: 700;
             text-transform: uppercase; font-size: 0.9rem; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
         }
 
-        .btn-cerrar-menu {
-            margin-top: 40px; background: var(--error); color: #fff;
-            border: none; padding: 15px 40px; border-radius: 50px;
-            font-weight: 900; cursor: pointer; text-transform: uppercase;
-        }
+        .btn-cerrar-menu { margin-top: 40px; background: var(--error); color: #fff; border: none; padding: 15px 40px; border-radius: 50px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* --- RECTÁNGULOS CON NEÓN AZUL RESALTADO --- */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { 
             background: rgba(51, 153, 255, 0.1); 
@@ -103,13 +93,13 @@
             border-radius: 15px; padding: 15px 12px; 
             display: flex; align-items: center; justify-content: space-between;
         }
-        .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; text-shadow: 1px 1px 2px #000; }
+        .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
         .controles { display: flex; gap: 8px; width: 140px; justify-content: center; }
         .btn-lev { width: 38px; height: 38px; background: #000; border: 1px solid #555; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; }
         .btn-lev.active { background: var(--acento); color: #000; box-shadow: 0 0 15px var(--acento); border-color: #fff; }
 
         .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
-        .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; box-shadow: 0 0 20px rgba(51, 153, 255, 0.5); }
+        .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; }
 
         #overlay-modal, #imagen-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -119,6 +109,7 @@
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
         #carton-imagen-display { width: 100%; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
 
+        /* TICKET RENDER INVISIBLE */
         #ticket-render {
             position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
             padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
@@ -129,7 +120,7 @@
 
     <div id="ticket-render">
         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px;">
-            <h2 style="margin: 0; font-size: 22px;">PRODE ARGENTINO</h2>
+            <h2 style="margin: 0; font-size: 22px; letter-spacing: 1px;">PRODE ARGENTINO</h2>
             <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
                 <span style="background: #000; color: #fff; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">FECHA 1</span>
                 <span style="border: 1.5px solid #000; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">VALOR: $100</span>
@@ -137,7 +128,7 @@
             <p id="t-id" style="margin: 8px 0 0 0; font-size: 12px; font-weight: bold; font-family: monospace;"></p>
         </div>
         <div style="font-size: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #aaa; padding-bottom: 5px;">
-            <span><b>USER:</b> <span id="t-user"></span></span>
+            <span><b>USUARIO:</b> <span id="t-user"></span></span>
             <span id="t-fecha"></span>
         </div>
         <div id="t-partidos"></div>
@@ -170,20 +161,14 @@
         </div>
     </div>
 
-    <div id="overlay-modal">
-        <div class="modal">
-            <div id="m-titulo" style="font-weight: 900; font-size: 1.3rem; margin-bottom: 10px; color:#fff;"></div>
-            <div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div>
-            <div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div>
-        </div>
-    </div>
+    <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
 
     <div class="app-container">
         <div class="header">
             <button class="btn-menu-top" onclick="toggleMenu()">MENU</button>
             <div class="user-info">
                 <div class="usuario-txt">{{ usuario }}</div>
-                <div id="display-saldo" class="txt-saldo">${{ saldo }}</div>
+                <div id="display-saldo" class="txt-saldo"></div>
             </div>
             <div class="fecha-badge">FECHA 1</div>
         </div>
@@ -202,14 +187,19 @@
             {% endfor %}
         </div>
 
-        <div class="footer">
-            <button class="btn-confirmar" onclick="intentarGuardar()">GUARDAR JUGADA</button>
-        </div>
+        <div class="footer"><button class="btn-confirmar" onclick="intentarGuardar()">GUARDAR JUGADA</button></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         const nombreUsuario = "{{ usuario }}";
+        let saldoActual = parseInt("{{ saldo }}");
+
+        function formatearMoneda(valor) {
+            return "$" + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
         
         function toggleMenu() {
             const menu = document.getElementById('menu-overlay');
@@ -259,10 +249,16 @@
                 const visitante = f.querySelector('.visitante').innerText;
                 const e = f.querySelector('.active').innerText;
                 predicciones[i+1] = e;
-                htmlTicket += `<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:11px;">
-                    <span style="width:35%; font-weight:bold;">${local}</span>
-                    <span style="width:30%; text-align:center;">[ ${e} ]</span>
-                    <span style="width:35%; text-align:right; font-weight:bold;">${visitante}</span>
+                
+                htmlTicket += `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="width:35%; font-weight:900; font-size:11px;">${local}</span>
+                    <div style="width:30%; display:flex; justify-content:center; gap:3px;">
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='L'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='E'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='V'?'X':''}</div>
+                    </div>
+                    <span style="width:35%; font-weight:900; font-size:11px; text-align:right;">${visitante}</span>
                 </div>`;
             });
 
@@ -274,11 +270,15 @@
 
             const res = await response.json();
             if (response.ok) {
+                // HORA ARGENTINA
+                const ahora = new Date();
+                const horaArg = ahora.toLocaleString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
+                
                 document.getElementById('t-id').innerText = "TICKET #" + res.id_ticket;
                 document.getElementById('t-user').innerText = nombreUsuario.toUpperCase();
-                document.getElementById('t-fecha').innerText = res.fecha;
+                document.getElementById('t-fecha').innerText = horaArg;
                 document.getElementById('t-partidos').innerHTML = htmlTicket;
-                document.getElementById('display-saldo').innerText = "$" + res.saldo_nuevo;
+                document.getElementById('display-saldo').innerText = formatearMoneda(res.saldo_nuevo);
 
                 html2canvas(document.getElementById('ticket-render'), { scale: 3 }).then(canvas => {
                     const imageData = canvas.toDataURL('image/png');
@@ -300,7 +300,6 @@
             lista.innerHTML = '<p style="text-align:center;">Cargando...</p>';
             document.getElementById('historial-overlay').style.display = 'flex';
             toggleMenu();
-
             const r = await fetch(`/mis_comprobantes/${nombreUsuario}`);
             const d = await r.json();
             if(d.fotos && d.fotos.length > 0) {
@@ -311,18 +310,15 @@
                     img.style.cssText = "width:100%; border-radius:10px; border:1px solid #333; margin-bottom:10px;";
                     lista.appendChild(img);
                 });
-            } else {
-                lista.innerHTML = '<p style="text-align:center;">No tenés jugadas.</p>';
-            }
+            } else { lista.innerHTML = '<p style="text-align:center;">No tenés jugadas guardadas.</p>'; }
         }
 
         function descargarImagen() {
             const link = document.createElement('a');
             link.href = document.getElementById('carton-imagen-display').src;
-            link.download = `Prode_${nombreUsuario}.png`;
+            link.download = `Ticket_Prode_${nombreUsuario}.png`;
             link.click();
         }
-
         function cerrarModalImagen() { location.reload(); }
     </script>
 </body>
