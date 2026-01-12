@@ -16,6 +16,7 @@
             --blanco-badge: #f0f0f0;
         }
 
+        /* Tu diseño original intacto */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
@@ -98,6 +99,7 @@
             font-weight: 900; cursor: pointer; text-transform: uppercase;
         }
 
+        /* PARTIDOS CON TU ESTILO NEÓN */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; background-color: #000; }
         .fila { 
             background: rgba(51, 153, 255, 0.05); border: 1px solid #2d3748; 
@@ -105,11 +107,11 @@
         }
         .equipo-nombre { width: 32%; font-size: 0.8rem; font-weight: 900; text-transform: uppercase; color: #fff; }
         .controles { display: flex; gap: 6px; width: 130px; justify-content: center; }
-        .btn-lev { width: 36px; height: 36px; background: #000; border: 1px solid #444; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; }
+        .btn-lev { width: 36px; height: 36px; background: #000; border: 1px solid #444; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; cursor: pointer; }
         .btn-lev.active { background: var(--acento); color: #000; box-shadow: 0 0 10px var(--acento); border-color: #fff; }
 
         .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
-        .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; }
+        .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; }
 
         #overlay-modal, #imagen-modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -141,9 +143,7 @@
             <span><b>USER:</b> <span id="t-user"></span></span>
             <span id="t-fecha"></span>
         </div>
-
         <div id="t-partidos"></div>
-
         <div style="text-align: center; border-top: 1px solid #000; margin-top: 15px; padding-top: 10px; font-size: 10px; font-weight: 900; letter-spacing: 1px;">
             *** COMPROBANTE OFICIAL ***
         </div>
@@ -153,16 +153,10 @@
         <div class="menu-title">OPCIONES</div>
         <div class="menu-grid">
             <button class="btn-menu-item" onclick="abrirHistorial()">📸 MIS COMPROBANTES <span>></span></button>
-            <button class="btn-menu-item">💰 CARGAR SALDO <span>></span></button>
-            <button class="btn-menu-item" onclick="location.href='/logout'" style="color: var(--error);">🚪 CERRAR SESIÓN <span>></span></button>
+            <button class="btn-menu-item" onclick="alert('Contactate con el administrador para cargar saldo.')">💰 CARGAR SALDO <span>></span></button>
+            <button class="btn-menu-item" onclick="window.location.href='/logout'" style="color:var(--error)">🚪 CERRAR SESIÓN</button>
         </div>
         <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
-    </div>
-
-    <div id="historial-overlay">
-        <h2 style="color:var(--azul-neon); margin-bottom:20px;">MIS CARTONES</h2>
-        <div id="lista-cartones" style="width:100%; max-width:400px; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column; gap:15px; padding:10px;"></div>
-        <button onclick="document.getElementById('historial-overlay').style.display='none'" class="btn-cerrar-menu">CERRAR</button>
     </div>
 
     <div id="imagen-modal-overlay">
@@ -171,9 +165,9 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <button onclick="descargarImagen()" style="background:var(--acento); padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">DESCARGAR</button>
                 <button onclick="compartirWhatsApp()" style="background:#25D366; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="18" height="18"> COMPARTIR
+                    COMPARTIR
                 </button>
-                <button onclick="cerrarModalImagen()" style="grid-column:span 2; background:#333; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">CERRAR</button>
+                <button onclick="cerrarModalImagen()" style="grid-column:span 2; background:#333; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">LISTO</button>
             </div>
         </div>
     </div>
@@ -191,7 +185,7 @@
             <button class="btn-menu-top" onclick="toggleMenu()">MENU</button>
             <div class="user-info">
                 <div class="usuario-txt">{{ usuario }}</div>
-                <div id="display-saldo" class="txt-saldo"></div>
+                <div id="display-saldo" class="txt-saldo">${{ saldo }}</div>
             </div>
             <div class="fecha-badge">FECHA 1</div>
         </div>
@@ -217,13 +211,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        // Traemos las variables desde Python
         const nombreUsuario = "{{ usuario }}";
-        const saldoInicial = {{ saldo }};
-        let ultimaImagenCarton = '';
-
-        document.getElementById('display-saldo').innerText = "$" + saldoInicial.toLocaleString('es-AR');
-
+        
         function toggleMenu() {
             const menu = document.getElementById('menu-overlay');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
@@ -242,10 +231,12 @@
             const cajaBotones = document.getElementById('m-botones');
             cajaBotones.innerHTML = '';
             modalOverlay.style.display = 'flex';
+            
             const btnOk = document.createElement('button');
-            btnOk.innerText = tipo === 'confirmar' ? 'SÍ, GUARDAR' : 'OK';
+            btnOk.innerText = tipo === 'confirmar' ? 'SÍ, PAGAR' : 'CERRAR';
             btnOk.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:var(--azul-neon); cursor:pointer;";
             btnOk.onclick = () => { modalOverlay.style.display = 'none'; if(accion) accion(); };
+            
             if(tipo === 'confirmar') {
                 const btnCan = document.createElement('button');
                 btnCan.innerText = 'NO';
@@ -257,109 +248,85 @@
         }
 
         function intentarGuardar() {
-            const faltantes = document.querySelectorAll('.fila:not(:has(.active))').length;
-            if (faltantes > 0) mostrarModal("⚠️ ESPERA", "Completá todos los partidos.", "aviso");
-            else mostrarModal("⚽ CONFIRMAR", "¿Guardar jugada por $100?", "confirmar", procesarJugada);
+            const jugados = document.querySelectorAll('.btn-lev.active').length;
+            if (jugados < 15) {
+                mostrarModal("⚠️ ATENCIÓN", "Tenés que completar los 15 partidos.", "aviso");
+            } else {
+                mostrarModal("⚽ CONFIRMAR", "¿Deseas guardar esta jugada por $100?", "confirmar", procesarJugada);
+            }
         }
 
         async function procesarJugada() {
-            let resumen = ""; let htmlTicket = "";
+            let predicciones = {};
+            let htmlTicket = "";
+            
             document.querySelectorAll('.fila').forEach((f, i) => {
                 const local = f.querySelector('.local').innerText;
                 const visitante = f.querySelector('.visitante').innerText;
                 const e = f.querySelector('.active').innerText;
-                resumen += `${i+1}:${e} `;
-                htmlTicket += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-                    <span style="width:35%; font-weight:900; font-size:12px; text-transform:uppercase;">${local}</span>
-                    <div style="width:30%; display:flex; justify-content:center; gap:4px;">
-                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='L'?'X':''}</div>
-                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='E'?'X':''}</div>
-                        <div style="width:18px; height:18px; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${e=='V'?'X':''}</div>
+                predicciones[i+1] = e;
+                
+                htmlTicket += `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="width:35%; font-weight:900; font-size:11px;">${local}</span>
+                    <div style="width:30%; display:flex; justify-content:center; gap:3px;">
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px;">${e=='L'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px;">${e=='E'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px;">${e=='V'?'X':''}</div>
                     </div>
-                    <span style="width:35%; font-weight:900; font-size:12px; text-transform:uppercase; text-align:right;">${visitante}</span>
+                    <span style="width:35%; font-weight:900; font-size:11px; text-align:right;">${visitante}</span>
                 </div>`;
             });
 
-            // Enviamos jugada al servidor
             const response = await fetch('/guardar_jugada', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ predicciones: resumen }) // Ya no mandamos usuario, el servidor lo sabe por la sesión
+                body: JSON.stringify({ predicciones: predicciones })
             });
-            const res = await response.json();
 
+            const res = await response.json();
             if (response.ok) {
+                // Llenar datos del ticket invisible
                 document.getElementById('t-id').innerText = "TICKET #" + res.id_ticket;
                 document.getElementById('t-user').innerText = nombreUsuario.toUpperCase();
                 document.getElementById('t-fecha').innerText = res.fecha;
                 document.getElementById('t-partidos').innerHTML = htmlTicket;
+                document.getElementById('display-saldo').innerText = "$" + res.saldo_nuevo;
 
+                // Capturar imagen
                 html2canvas(document.getElementById('ticket-render'), { scale: 3 }).then(canvas => {
                     const imageData = canvas.toDataURL('image/png');
+                    
+                    // Enviar imagen al servidor para historial
                     fetch('/guardar_imagen_carton', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ imageData: imageData })
-                    }).then(r => r.json()).then(data => {
-                        ultimaImagenCarton = data.imageUrl;
-                        document.getElementById('carton-imagen-display').src = imageData;
-                        document.getElementById('imagen-modal-overlay').style.display = 'flex';
-                        document.getElementById('display-saldo').innerText = "$" + res.saldo_nuevo.toLocaleString('es-AR');
                     });
+
+                    // Mostrar para descargar
+                    document.getElementById('carton-imagen-display').src = imageData;
+                    document.getElementById('imagen-modal-overlay').style.display = 'flex';
                 });
             } else {
                 mostrarModal("❌ ERROR", res.mensaje, "aviso");
             }
         }
 
-        async function abrirHistorial() {
-            const lista = document.getElementById('lista-cartones');
-            lista.innerHTML = '<p style="text-align:center;">Buscando...</p>';
-            document.getElementById('historial-overlay').style.display = 'flex';
-            toggleMenu();
-
-            const r = await fetch(`/mis_comprobantes/${nombreUsuario}`);
-            const d = await r.json();
-            if(d.fotos && d.fotos.length > 0) {
-                lista.innerHTML = '';
-                d.fotos.reverse().forEach((url, i) => {
-                    const card = document.createElement('div');
-                    card.style.cssText = "background:#111; border:1px solid #333; padding:10px; border-radius:15px; text-align:center;";
-                    card.innerHTML = `
-                        <div style="color:#aaa; font-size:11px; margin-bottom:5px;">JUGADA #${d.fotos.length - i}</div>
-                        <img src="${url}" style="width:100%; border-radius:5px; margin-bottom:10px; cursor:pointer;" onclick="ampliar('${url}')">
-                        <button onclick="ampliar('${url}')" style="background:var(--azul-neon); border:none; padding:8px 15px; border-radius:5px; font-weight:bold; cursor:pointer; width:100%; font-size:11px;">VER / COMPARTIR</button>
-                    `;
-                    lista.appendChild(card);
-                });
-            } else {
-                lista.innerHTML = '<p style="text-align:center;">No hay jugadas aún.</p>';
-            }
-        }
-
-        function ampliar(url) {
-            ultimaImagenCarton = url;
-            document.getElementById('carton-imagen-display').src = url;
-            document.getElementById('imagen-modal-overlay').style.display = 'flex';
-        }
-
-        function cerrarModalImagen() { 
-            document.getElementById('imagen-modal-overlay').style.display = 'none'; 
-            location.reload(); 
-        }
-
         function descargarImagen() {
             const link = document.createElement('a');
             link.href = document.getElementById('carton-imagen-display').src;
-            link.download = `prode_argentino_${nombreUsuario}.png`;
-            document.body.appendChild(link);
+            link.download = `Ticket_Prode_${nombreUsuario}.png`;
             link.click();
-            document.body.removeChild(link);
         }
 
         function compartirWhatsApp() {
-            const msg = encodeURIComponent("¡Mirá mi jugada del Prode Argentino! ⚽");
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
+            const texto = encodeURIComponent("¡Ya hice mi jugada en el PRODE! ⚽ Suerte para todos.");
+            window.open(`https://api.whatsapp.com/send?text=${texto}`, '_blank');
+        }
+
+        function cerrarModalImagen() {
+            location.reload();
         }
     </script>
 </body>
