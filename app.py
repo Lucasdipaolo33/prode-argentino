@@ -39,13 +39,12 @@ def login_page():
 
 @app.route('/verificar_login', methods=['POST'])
 def verificar_login():
-    user_input = request.form.get('usuario').upper()
+    user_input = (request.form.get('usuario') or "").upper().strip()
     pass_input = request.form.get('password')
     user_doc = usuarios_col.find_one({'usuario': user_input})
     
-    if user_doc and user_doc['password'] == pass_input:
+    if user_doc and str(user_doc['password']) == str(pass_input):
         session['usuario'] = user_input
-        # Redirección inteligente: ADMIN va a su panel, USER a jugar
         if user_doc.get('nivel') == 2:
             return redirect(url_for('admin_panel'))
         return redirect(url_for('home'))
@@ -58,52 +57,54 @@ def home():
     saldo = user_doc.get('saldo', 0) if user_doc else 0
     return render_template('index.html', usuario=session['usuario'], saldo=saldo, partidos=PARTIDOS)
 
-# --- PANEL DE ADMINISTRADOR ---
 @app.route('/admin_panel')
 def admin_panel():
     if 'usuario' not in session: return redirect(url_for('login_page'))
     user_doc = usuarios_col.find_one({'usuario': session['usuario']})
-    
     if not user_doc or user_doc.get('nivel') != 2:
-        return "Acceso denegado: No eres administrador", 403
-        
+        return "Acceso denegado", 403
+    
     usuarios = list(usuarios_col.find())
     return render_template('admin.html', usuario=session['usuario'], usuarios=usuarios)
 
-# --- GESTIÓN DE USUARIOS (RUTA PARA TU FORMULARIO HTML) ---
 @app.route('/admin/gestion_usuario', methods=['POST'])
 def gestion_usuario():
     if 'usuario' not in session: return redirect(url_for('login_page'))
-    user_admin = usuarios_col.find_one({'usuario': session['usuario']})
-    if not user_admin or user_admin.get('nivel') != 2:
-        return "No autorizado", 403
+    
+    try:
+        accion = request.form.get('accion')
+        nombre = (request.form.get('usuario_nombre') or "").upper().strip()
+        
+        if not nombre:
+            flash("Error: El nombre de usuario no puede estar vacío")
+            return redirect(url_for('admin_panel'))
 
-    accion = request.form.get('accion')
-    nombre = request.form.get('usuario_nombre').upper()
-
-    if accion == 'crear':
-        clave = request.form.get('usuario_clave')
-        saldo_inicial = int(request.form.get('usuario_saldo', 0))
-        if usuarios_col.find_one({'usuario': nombre}):
-            flash(f"ERROR: El usuario {nombre} ya existe.")
-        else:
-            usuarios_col.insert_one({
-                'usuario': nombre,
-                'password': clave,
-                'nivel': 0,
-                'saldo': saldo_inicial,
-                'imagenes_cartones': []
-            })
-            flash(f"ÉXITO: Usuario {nombre} creado correctamente.")
-
-    elif accion == 'cargar_saldo':
-        monto = int(request.form.get('monto', 0))
-        resultado = usuarios_col.update_one({'usuario': nombre}, {'$inc': {'saldo': monto}})
-        if resultado.modified_count > 0:
-            flash(f"ÉXITO: Se cargaron ${monto} a {nombre}.")
-        else:
-            flash(f"ERROR: No se encontró al usuario {nombre}.")
-
+        if accion == 'crear':
+            clave = request.form.get('usuario_clave')
+            saldo_inicial = request.form.get('usuario_saldo')
+            saldo_num = int(saldo_inicial) if (saldo_inicial and saldo_inicial.isdigit()) else 0
+            
+            if usuarios_col.find_one({'usuario': nombre}):
+                flash(f"El usuario {nombre} ya existe")
+            else:
+                usuarios_col.insert_one({
+                    'usuario': nombre, 'password': clave, 'nivel': 0, 
+                    'saldo': saldo_num, 'imagenes_cartones': []
+                })
+                flash(f"Usuario {nombre} creado con éxito")
+                
+        elif accion == 'cargar_saldo':
+            monto = request.form.get('monto')
+            monto_num = int(monto) if (monto and monto.isdigit()) else 0
+            res = usuarios_col.update_one({'usuario': nombre}, {'$inc': {'saldo': monto_num}})
+            if res.modified_count > 0:
+                flash(f"Saldo cargado a {nombre}")
+            else:
+                flash("Usuario no encontrado")
+    
+    except Exception as e:
+        flash(f"Error técnico: {str(e)}")
+            
     return redirect(url_for('admin_panel'))
 
 @app.route('/logout')
@@ -116,21 +117,13 @@ def guardar_jugada():
     data = request.json
     usuario = session.get('usuario')
     user_doc = usuarios_col.find_one({'usuario': usuario})
-    
     if not user_doc or user_doc.get('saldo', 0) < 100:
         return jsonify({'mensaje': 'Saldo insuficiente'}), 400
-    
     id_ticket = os.urandom(3).hex().upper()
     fecha_hora = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     usuarios_col.update_one({'usuario': usuario}, {'$inc': {'saldo': -100}})
-    
     predicciones_str = " ".join([f"{k}:{v}" for k, v in data.get('predicciones', {}).items()])
-    jugadas_col.insert_one({
-        'fecha': fecha_hora,
-        'id_ticket': id_ticket,
-        'usuario': usuario,
-        'jugada': predicciones_str
-    })
+    jugadas_col.insert_one({'fecha': fecha_hora, 'id_ticket': id_ticket, 'usuario': usuario, 'jugada': predicciones_str})
     return jsonify({'mensaje': 'OK', 'id_ticket': id_ticket, 'fecha': fecha_hora, 'saldo_nuevo': user_doc['saldo'] - 100})
 
 @app.route('/guardar_imagen_carton', methods=['POST'])
