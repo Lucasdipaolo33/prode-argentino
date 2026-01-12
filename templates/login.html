@@ -1,177 +1,143 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Prode Argentino - Ingreso</title>
+import os
+import base64
+import datetime
+# Agregamos session, redirect, url_for y flash para que el login sea real
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+
+app = Flask(__name__)
+# Esta clave es necesaria para que las sesiones funcionen en la nube
+app.secret_key = 'prode_argentino_secret_key' 
+
+# BASE DE DATOS - Mantenemos tus usuarios y agregamos 'password'
+# NOTA: Los nombres de usuario en el diccionario están en MAYÚSCULAS 
+# para que coincidan con tu login del celular.
+db = {
+    'usuarios': {
+        'LAURA': {'password': '123', 'saldo': 500, 'jugadas': [], 'imagenes_cartones': []},
+        'JUAN': {'password': '456', 'saldo': 1200, 'jugadas': [], 'imagenes_cartones': []},
+        'ADMIN': {'password': 'ADMIN', 'saldo': 99999, 'jugadas': [], 'imagenes_cartones': []}
+    },
+    'partidos': [
+        {'local': 'RIVER PLATE', 'visitante': 'BOCA JUNIORS'},
+        {'local': 'RACING', 'visitante': 'INDEPENDIENTE'},
+        {'local': 'SAN LORENZO', 'visitante': 'HURACAN'},
+        {'local': 'ESTUDIANTES LP', 'visitante': 'GIMNASIA LP'},
+        {'local': 'ROSARIO CENTRAL', 'visitante': 'NEWELLS'},
+        {'local': 'TALLERES', 'visitante': 'BELGRANO'},
+        {'local': 'LANUS', 'visitante': 'BANFIELD'},
+        {'local': 'VELEZ', 'visitante': 'PLATENSE'},
+        {'local': 'COLON', 'visitante': 'UNION'},
+        {'local': 'ATL. TUCUMAN', 'visitante': 'CENTRAL CORDOBA'},
+        {'local': 'GODOY CRUZ', 'visitante': 'INDEP. RIVADAVIA'},
+        {'local': 'ARGENTINOS JRS', 'visitante': 'DEF. Y JUSTICIA'},
+        {'local': 'TIGRE', 'visitante': 'BARRACAS CENTRAL'},
+        {'local': 'INSTITUTO', 'visitante': 'SARMIENTO'},
+        {'local': 'RIESTRA', 'visitante': 'DEPORTIVO MAIPU'}
+    ]
+}
+
+UPLOAD_FOLDER = os.path.join('static', 'comprobantes')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# --- RUTA DE LOGIN (Página de inicio) ---
+@app.route('/')
+def login_page():
+    if 'usuario' in session:
+        return redirect(url_for('home'))
+    return render_template('login.html')
+
+# --- PROCESAR EL INGRESO ---
+@app.route('/verificar_login', methods=['POST'])
+def verificar_login():
+    # Recibimos y pasamos a Mayúsculas para evitar errores de teclado
+    user = request.form.get('usuario').strip().upper()
+    pas = request.form.get('password').strip().upper()
     
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}?v=1">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.png') }}?v=1">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Prode Arg">
+    if user in db['usuarios'] and db['usuarios'][user]['password'] == pas:
+        session['usuario'] = user
+        return redirect(url_for('home'))
+    else:
+        # Si falla, manda un mensaje de error al login
+        flash('USUARIO O CONTRASEÑA INCORRECTOS')
+        return redirect(url_for('login_page'))
 
-    <style>
-        body {
-            background-color: #000000;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-            overflow: hidden;
-        }
+# --- RUTA DEL JUEGO (index.html) ---
+@app.route('/index')
+def home():
+    # Seguridad: Si no hay usuario en sesión, al login directo
+    if 'usuario' not in session:
+        return redirect(url_for('login_page'))
+    
+    usuario_actual = session['usuario']
+    user_data = db['usuarios'].get(usuario_actual)
+    
+    # Pasamos los mismos datos que tu original, pero dinámicos
+    return render_template('index.html', 
+                           usuario=usuario_actual, 
+                           saldo=user_data['saldo'], 
+                           partidos=db['partidos'])
 
-        .contenedor-principal {
-            width: 100%;
-            max-width: 400px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            height: 100%;
-        }
+# --- CERRAR SESIÓN ---
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login_page'))
 
-        .logo-img {
-            width: 550px; 
-            max-width: 140%; 
-            height: auto;
-            margin-top: -150px; 
-            filter: drop-shadow(0 0 15px rgba(51, 153, 255, 0.8));
-            pointer-events: none;
-        }
+# --- LAS RUTAS DE GUARDADO (IGUALES A LAS TUYAS) ---
+@app.route('/guardar_jugada', methods=['POST'])
+def guardar_jugada():
+    data = request.json
+    usuario = session.get('usuario') # Usamos el de la sesión por seguridad
+    predicciones = data.get('predicciones')
+    
+    if not usuario or db['usuarios'][usuario]['saldo'] < 100:
+        return jsonify({'mensaje': 'Saldo insuficiente'}), 400
+    
+    id_ticket = os.urandom(3).hex().upper()
+    fecha_hora = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    
+    db['usuarios'][usuario]['saldo'] -= 100
+    
+    registro_admin = f"[{fecha_hora}] ID:{id_ticket} | USER:{usuario} | JUGADA:{predicciones}"
+    with open("registro_admin_jugadas.txt", "a", encoding="utf-8") as f:
+        f.write(registro_admin + "\n")
+    
+    return jsonify({
+        'mensaje': 'OK',
+        'id_ticket': id_ticket,
+        'fecha': fecha_hora,
+        'saldo_nuevo': db['usuarios'][usuario]['saldo']
+    }), 200
 
-        h1 {
-            font-style: italic;
-            text-transform: uppercase;
-            font-size: 28px;
-            margin-top: -180px; 
-            margin-bottom: 0px;
-            text-align: center;
-            letter-spacing: 3px;
-            position: relative;
-            color: #ffffff;
-            text-shadow: 0 0 5px #fff, 0 0 10px #3399ff, 0 0 20px #0052D4, 0 0 30px #0052D4, 2px 2px 2px rgba(0,0,0,1);
-            font-weight: 900;
-            pointer-events: none;
-        }
+@app.route('/guardar_imagen_carton', methods=['POST'])
+def guardar_imagen_carton():
+    data = request.json
+    usuario = session.get('usuario')
+    img_data = data.get('imageData')
 
-        .bloque-login {
-            width: 100%;
-            padding: 0 25px;
-            box-sizing: border-box;
-            margin-top: 80px; 
-            position: relative;
-            z-index: 999;
-        }
+    try:
+        header, encoded = img_data.split(",", 1)
+        decoded = base64.b64decode(encoded)
+        filename = f"{usuario}_{os.urandom(3).hex()}.png"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
 
-        .mensaje-error {
-            background-color: rgba(255, 0, 0, 0.3);
-            border: 1px solid #ff4d4d;
-            color: #ffffff;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 14px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
+        with open(filepath, 'wb') as f:
+            f.write(decoded)
 
-        .campo-entrada {
-            position: relative;
-            margin-bottom: 18px;
-        }
+        url_final = f"/static/comprobantes/{filename}"
+        db['usuarios'][usuario]['imagenes_cartones'].append(url_final)
+        return jsonify({'mensaje': 'Imagen guardada', 'imageUrl': url_final}), 200
+    except Exception as e:
+        return jsonify({'mensaje': str(e)}), 500
 
-        input {
-            width: 100%;
-            padding: 15px;
-            background-color: #121212; 
-            border: 1px solid #333;
-            border-bottom: 2px solid #3399ff;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-        }
+@app.route('/mis_comprobantes/<usuario>')
+def mis_comprobantes(usuario):
+    # Solo puede ver sus propios comprobantes
+    if session.get('usuario') != usuario:
+        return jsonify({'fotos': []})
+    fotos = db['usuarios'].get(usuario, {}).get('imagenes_cartones', [])
+    return jsonify({'fotos': fotos})
 
-        input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .icono-ojo {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #3399ff;
-            cursor: pointer;
-            font-size: 22px;
-            z-index: 1002;
-            padding: 5px;
-            user-select: none;
-        }
-
-        .boton-ingresar {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(45deg, #0052D4, #6FB1FC);
-            border: none;      
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            text-transform: uppercase;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="contenedor-principal">
-        <img src="{{ url_for('static', filename='logo.png') }}" class="logo-img">
-        <h1>Prode Argentino</h1>
-
-        <div class="bloque-login">
-            {% with messages = get_flashed_messages() %}
-              {% if messages %}
-                {% for message in messages %}
-                  <div class="mensaje-error">{{ message }}</div>
-                {% endfor %}
-              {% endif %}
-            {% endwith %}
-
-            <form action="/verificar_login" method="POST">
-                <div class="campo-entrada">
-                    <input type="text" name="usuario" placeholder="USUARIO" required autocomplete="off">
-                </div>
-                
-                <div class="campo-entrada">
-                    <input type="password" id="password" name="password" placeholder="CONTRASEÑA" required>
-                    <span class="icono-ojo" id="toggle-ojo" onclick="verContrasena()">🙈</span>
-                </div>
-
-                <button type="submit" class="boton-ingresar">INGRESAR</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function verContrasena() {
-            var inputClave = document.getElementById("password");
-            var icono = document.getElementById("toggle-ojo");
-            
-            if (inputClave.type === "password") {
-                inputClave.type = "text";
-                icono.innerText = "👁️"; 
-            } else {
-                inputClave.type = "password";
-                icono.innerText = "🙈"; 
-            }
-        }
-    </script>
-</body>
-</html>
+if __name__ == '__main__':
+    app.run(debug=True)
