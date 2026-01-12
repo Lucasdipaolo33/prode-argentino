@@ -10,10 +10,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            min-height: 100vh; /* Cambiado para permitir scroll si hay muchos usuarios */
+            min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
-            overflow-y: auto; /* Permitir scroll vertical */
+            overflow-y: auto;
         }
 
         .contenedor-app {
@@ -85,6 +85,7 @@
             border-radius: 10px;
             color: white;
             outline: none;
+            text-transform: uppercase; /* Para que coincida con el login */
         }
 
         .boton-azul {
@@ -131,7 +132,7 @@
             cursor: pointer;
         }
 
-        .msg-flash { color: #f1c40f; margin-bottom: 10px; font-size: 13px; }
+        .msg-flash { color: #f1c40f; margin-bottom: 10px; font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -141,7 +142,7 @@
         <h1>Panel Control</h1>
 
         <div class="caja-info">
-            <span class="user-badge">ADMIN: {{ usuario.upper() }}</span>
+            <span class="user-badge">ADMIN: {{ usuario }}</span>
             
             {% with messages = get_flashed_messages() %}
               {% if messages %}
@@ -152,20 +153,18 @@
             {% endwith %}
 
             <form action="/admin/gestion_usuario" method="POST" class="form-admin">
-                <input type="hidden" name="admin_actual" value="{{ usuario }}">
                 <input type="hidden" name="accion" value="crear">
                 <strong style="color: #3399ff;">+ NUEVO CLIENTE</strong>
-                <input type="text" name="usuario_nombre" placeholder="Nombre de Usuario" required>
-                <input type="text" name="usuario_clave" placeholder="Contraseña" required>
-                <input type="number" name="usuario_saldo" placeholder="Saldo Inicial (Opcional)" value="0">
+                <input type="text" name="usuario_nombre" placeholder="Nombre de Usuario" required oninput="this.value = this.value.toUpperCase()">
+                <input type="text" name="usuario_clave" placeholder="Contraseña" required oninput="this.value = this.value.toUpperCase()">
+                <input type="number" name="usuario_saldo" placeholder="Saldo Inicial" value="0">
                 <button type="submit" class="boton-azul">Crear Usuario</button>
             </form>
 
             <form action="/admin/gestion_usuario" method="POST" class="form-admin">
-                <input type="hidden" name="admin_actual" value="{{ usuario }}">
                 <input type="hidden" name="accion" value="cargar_saldo">
                 <strong style="color: #2ecc71;">$ CARGAR SALDO</strong>
-                <input type="text" name="usuario_nombre" placeholder="Usuario a cargar" required>
+                <input type="text" name="usuario_nombre" placeholder="Usuario a cargar" required oninput="this.value = this.value.toUpperCase()">
                 <input type="number" name="monto" placeholder="Monto $$" required>
                 <button type="submit" class="boton-azul" style="background: linear-gradient(45deg, #27ae60, #2ecc71);">Cargar Saldo</button>
             </form>
@@ -182,7 +181,7 @@
                 {% endfor %}
             </div>
 
-            <a href="/" class="boton-salir">Cerrar Sesión</a>
+            <a href="/logout" class="boton-salir">Cerrar Sesión</a>
         </div>
     </div>
 
