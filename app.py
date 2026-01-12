@@ -1,7 +1,7 @@
 import os
 import base64
 import datetime
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -31,7 +31,10 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 @app.route('/')
 def login_page():
-    if 'usuario' in session: return redirect(url_for('home'))
+    if 'usuario' in session:
+        user_doc = usuarios_col.find_one({'usuario': session['usuario']})
+        if user_doc and user_doc.get('nivel') == 2: return redirect(url_for('admin_panel'))
+        return redirect(url_for('home'))
     return render_template('login.html')
 
 @app.route('/verificar_login', methods=['POST'])
@@ -42,7 +45,7 @@ def verificar_login():
     
     if user_doc and user_doc['password'] == pass_input:
         session['usuario'] = user_input
-        # Si es nivel 2, va al panel de admin; si no, al index normal
+        # Redirección inteligente: ADMIN va a su panel, USER a jugar
         if user_doc.get('nivel') == 2:
             return redirect(url_for('admin_panel'))
         return redirect(url_for('home'))
@@ -55,55 +58,53 @@ def home():
     saldo = user_doc.get('saldo', 0) if user_doc else 0
     return render_template('index.html', usuario=session['usuario'], saldo=saldo, partidos=PARTIDOS)
 
-# --- RUTAS DE ADMINISTRADOR ---
+# --- PANEL DE ADMINISTRADOR ---
 @app.route('/admin_panel')
 def admin_panel():
     if 'usuario' not in session: return redirect(url_for('login_page'))
     user_doc = usuarios_col.find_one({'usuario': session['usuario']})
+    
     if not user_doc or user_doc.get('nivel') != 2:
-        return "Acceso denegado", 403
-    
+        return "Acceso denegado: No eres administrador", 403
+        
     usuarios = list(usuarios_col.find())
-    jugadas = list(jugadas_col.find().sort('fecha', -1))
-    return render_template('admin.html', usuarios=usuarios, jugadas=jugadas)
+    return render_template('admin.html', usuario=session['usuario'], usuarios=usuarios)
 
-@app.route('/admin/modificar_saldo', methods=['POST'])
-def modificar_saldo():
-    if 'usuario' not in session: return jsonify({'error': 'No logueado'}), 401
+# --- GESTIÓN DE USUARIOS (RUTA PARA TU FORMULARIO HTML) ---
+@app.route('/admin/gestion_usuario', methods=['POST'])
+def gestion_usuario():
+    if 'usuario' not in session: return redirect(url_for('login_page'))
     user_admin = usuarios_col.find_one({'usuario': session['usuario']})
     if not user_admin or user_admin.get('nivel') != 2:
-        return jsonify({'error': 'No autorizado'}), 403
-    
-    data = request.json
-    usuarios_col.update_one(
-        {'usuario': data['usuario']},
-        {'$inc': {'saldo': int(data['cantidad'])}}
-    )
-    return jsonify({'mensaje': 'Saldo actualizado con éxito'})
+        return "No autorizado", 403
 
-@app.route('/admin/crear_usuario', methods=['POST'])
-def crear_usuario():
-    if 'usuario' not in session: return jsonify({'error': 'No logueado'}), 401
-    user_admin = usuarios_col.find_one({'usuario': session['usuario']})
-    if not user_admin or user_admin.get('nivel') != 2:
-        return jsonify({'error': 'No autorizado'}), 403
-    
-    data = request.json
-    usuario_nombre = data['usuario'].upper()
-    
-    # Verificar si ya existe
-    if usuarios_col.find_one({'usuario': usuario_nombre}):
-        return jsonify({'error': 'El usuario ya existe'}), 400
+    accion = request.form.get('accion')
+    nombre = request.form.get('usuario_nombre').upper()
 
-    nuevo_user = {
-        'usuario': usuario_nombre,
-        'password': data['password'],
-        'nivel': 0,
-        'saldo': 0,
-        'imagenes_cartones': []
-    }
-    usuarios_col.insert_one(nuevo_user)
-    return jsonify({'mensaje': f'Usuario {usuario_nombre} creado'})
+    if accion == 'crear':
+        clave = request.form.get('usuario_clave')
+        saldo_inicial = int(request.form.get('usuario_saldo', 0))
+        if usuarios_col.find_one({'usuario': nombre}):
+            flash(f"ERROR: El usuario {nombre} ya existe.")
+        else:
+            usuarios_col.insert_one({
+                'usuario': nombre,
+                'password': clave,
+                'nivel': 0,
+                'saldo': saldo_inicial,
+                'imagenes_cartones': []
+            })
+            flash(f"ÉXITO: Usuario {nombre} creado correctamente.")
+
+    elif accion == 'cargar_saldo':
+        monto = int(request.form.get('monto', 0))
+        resultado = usuarios_col.update_one({'usuario': nombre}, {'$inc': {'saldo': monto}})
+        if resultado.modified_count > 0:
+            flash(f"ÉXITO: Se cargaron ${monto} a {nombre}.")
+        else:
+            flash(f"ERROR: No se encontró al usuario {nombre}.")
+
+    return redirect(url_for('admin_panel'))
 
 @app.route('/logout')
 def logout():
