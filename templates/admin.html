@@ -10,10 +10,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh; /* Cambiado para permitir scroll si hay muchos usuarios */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
-            overflow: hidden;
+            overflow-y: auto; /* Permitir scroll vertical */
         }
 
         .contenedor-app {
@@ -23,6 +23,7 @@
             flex-direction: column;
             align-items: center;
             box-sizing: border-box;
+            padding-bottom: 50px;
         }
 
         .logo-img {
@@ -49,14 +50,15 @@
         }
 
         .caja-info {
-            width: 85%;
-            background: rgba(20, 20, 20, 0.8);
-            padding: 30px;
+            width: 90%;
+            background: rgba(20, 20, 20, 0.9);
+            padding: 20px;
             border-radius: 20px;
             border: 1px solid #3399ff;
             text-align: center;
             box-shadow: 0 0 20px rgba(51, 153, 255, 0.3);
             margin-top: 50px;
+            box-sizing: border-box;
         }
 
         .user-badge {
@@ -67,16 +69,50 @@
             margin-bottom: 10px;
         }
 
-        .nivel-tag {
-            display: inline-block;
-            background: #0052D4;
-            color: white;
-            padding: 5px 15px;
+        .form-admin {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        input {
+            background: #111;
+            border: 1px solid #3399ff;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 12px;
+            color: white;
+            outline: none;
+        }
+
+        .boton-azul {
+            background: linear-gradient(45deg, #0052D4, #3399ff);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: bold;
+            cursor: pointer;
             text-transform: uppercase;
         }
+
+        .lista-usuarios {
+            width: 100%;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .usuario-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #222;
+        }
+
+        .saldo-txt { color: #2ecc71; font-weight: bold; }
 
         .boton-salir {
             display: block;
@@ -92,9 +128,10 @@
             text-transform: uppercase;
             text-align: center;
             box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(255, 77, 77, 0.3);
             cursor: pointer;
         }
+
+        .msg-flash { color: #f1c40f; margin-bottom: 10px; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -104,13 +141,46 @@
         <h1>Panel Control</h1>
 
         <div class="caja-info">
-            <span class="user-badge">BIENVENIDO: {{ usuario.upper() }}</span>
-            <div class="nivel-tag">ACCESO ADMINISTRADOR</div>
+            <span class="user-badge">ADMIN: {{ usuario.upper() }}</span>
             
-            <p style="margin-top: 20px; font-size: 14px; color: #bbb; line-height: 1.5;">
-                Has ingresado correctamente al sistema.<br>
-                Desde aquí podrás gestionar los resultados.
-            </p>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="msg-flash">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/admin/gestion_usuario" method="POST" class="form-admin">
+                <input type="hidden" name="admin_actual" value="{{ usuario }}">
+                <input type="hidden" name="accion" value="crear">
+                <strong style="color: #3399ff;">+ NUEVO CLIENTE</strong>
+                <input type="text" name="usuario_nombre" placeholder="Nombre de Usuario" required>
+                <input type="text" name="usuario_clave" placeholder="Contraseña" required>
+                <input type="number" name="usuario_saldo" placeholder="Saldo Inicial (Opcional)" value="0">
+                <button type="submit" class="boton-azul">Crear Usuario</button>
+            </form>
+
+            <form action="/admin/gestion_usuario" method="POST" class="form-admin">
+                <input type="hidden" name="admin_actual" value="{{ usuario }}">
+                <input type="hidden" name="accion" value="cargar_saldo">
+                <strong style="color: #2ecc71;">$ CARGAR SALDO</strong>
+                <input type="text" name="usuario_nombre" placeholder="Usuario a cargar" required>
+                <input type="number" name="monto" placeholder="Monto $$" required>
+                <button type="submit" class="boton-azul" style="background: linear-gradient(45deg, #27ae60, #2ecc71);">Cargar Saldo</button>
+            </form>
+
+            <div class="lista-usuarios">
+                <strong style="display:block; margin: 20px 0 10px 0; color: #3399ff; border-bottom: 1px solid #3399ff;">CLIENTES ACTIVOS:</strong>
+                {% for u in usuarios %}
+                    {% if u.nivel == 0 %}
+                    <div class="usuario-item">
+                        <span>{{ u.usuario }}</span>
+                        <span class="saldo-txt">${{ u.saldo }}</span>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
 
             <a href="/" class="boton-salir">Cerrar Sesión</a>
         </div>
