@@ -14,7 +14,7 @@
             --error: #ff4444;
             --texto: #ffffff;
             --blanco-badge: #f0f0f0;
-            /* Colores vivos para botones con cuerpo */
+            /* Colores vivos para el menú */
             --btn-comprobantes: #2563eb;
             --btn-saldo: #16a34a;
             --btn-youtube: #cc0000;
@@ -42,20 +42,22 @@
             position: relative;
         }
 
+        /* --- CABECERA ORIGINAL --- */
         .header {
             width: 100%; padding: 15px; display: flex; justify-content: space-between; align-items: center;
             background: #000; border-bottom: 3px solid var(--azul-neon); position: sticky; top: 0; z-index: 100;
         }
 
-        .btn-menu-top { background: var(--azul-neon); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; width: 75px; }
+        .btn-menu-top { background: var(--azul-neon); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 900; font-size: 0.7rem; text-transform: uppercase; cursor: pointer; width: 75px; transition: transform 0.1s; }
+        .btn-menu-top:active { transform: scale(0.9); }
 
         .user-info { display: flex; flex-direction: column; align-items: center; flex-grow: 1; }
-        .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; }
-        .txt-saldo { color: var(--acento); font-weight: 900; font-size: 1.4rem; margin-top: 2px; }
+        .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; opacity: 0.9; }
+        .txt-saldo { color: var(--acento); font-weight: 900; font-size: 1.4rem; margin-top: 2px; text-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
 
         .fecha-badge { background: var(--blanco-badge); color: #000; font-size: 0.7rem; font-weight: 900; padding: 8px 5px; border-radius: 8px; width: 75px; text-align: center; }
 
-        /* --- MENU OVERLAY --- */
+        /* --- MENÚ OVERLAY CON BOTONES CON CUERPO --- */
         #menu-overlay {
             display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
@@ -63,26 +65,15 @@
         }
 
         .menu-title { color: #fff; font-size: 1.8rem; font-weight: 900; margin-bottom: 40px; letter-spacing: 3px; text-shadow: 0 0 10px var(--azul-neon); }
-        .menu-grid { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 20px; }
+        .menu-grid { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; }
 
-        /* EFECTO CON CUERPO Y COLORES VIVOS */
         .btn-menu-item {
-            width: 100%; padding: 22px; 
-            border: none;
-            border-radius: 18px; 
-            color: #fff; font-weight: 800; text-transform: uppercase; font-size: 0.95rem; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; 
-            transition: all 0.1s ease;
-            /* Sombra para dar volumen (Cuerpo) */
-            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), 
-                        inset -3px -3px 7px rgba(0,0,0,0.4),
-                        0 5px 15px rgba(0,0,0,0.5);
+            width: 100%; padding: 20px; border: none;
+            border-radius: 18px; color: #fff; font-weight: 700; text-transform: uppercase; font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.3), inset -3px -3px 7px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5);
         }
-
-        .btn-menu-item:active { 
-            transform: scale(0.95); 
-            box-shadow: inset 4px 4px 10px rgba(0,0,0,0.5); /* Se "hunde" al apretar */
-        }
+        .btn-menu-item:active { transform: scale(0.96); box-shadow: inset 4px 4px 10px rgba(0,0,0,0.5); }
         
         .btn-historial { background: var(--btn-comprobantes); }
         .btn-cargar { background: var(--btn-saldo); }
@@ -97,20 +88,32 @@
 
         /* --- YOUTUBE OVERLAY --- */
         #youtube-overlay {
-            display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 500px; height: 100%; background: #0f0f0f; z-index: 8000; flex-direction: column;
+            display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px;
+            height: 100%; background: #0f0f0f; z-index: 8000; flex-direction: column;
         }
         .yt-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #0f0f0f; border-bottom: 1px solid #333; }
         #yt-frame { width: 100%; height: calc(100% - 50px); border: none; background: #0f0f0f; }
 
-        /* --- RESTO --- */
-        #historial-overlay { display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%; background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        /* --- PANEL DE PARTIDOS (ORIGINAL RESTAURADO) --- */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
-        .fila { background: rgba(51, 153, 255, 0.1); border: 2px solid var(--azul-neon); border-radius: 15px; padding: 15px 12px; display: flex; align-items: center; justify-content: space-between; }
+        .fila { 
+            background: rgba(51, 153, 255, 0.1); 
+            border: 2px solid var(--azul-neon); 
+            box-shadow: 0 0 10px rgba(51, 153, 255, 0.4); 
+            border-radius: 15px; padding: 15px 12px; 
+            display: flex; align-items: center; justify-content: space-between; 
+        }
+        .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
+        .controles { display: flex; gap: 8px; width: 140px; justify-content: center; }
+        .btn-lev { width: 38px; height: 38px; background: #000; border: 1px solid #555; border-radius: 8px; color: #eee; display: flex; align-items: center; justify-content: center; font-weight: 900; cursor: pointer; }
+        .btn-lev.active { background: var(--acento); color: #000; box-shadow: 0 0 15px var(--acento); border-color: #fff; }
+
+        .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
         .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; }
+
+        #historial-overlay { display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%; background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         #overlay-modal, #imagen-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; padding: 20px; }
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
-        #ticket-render { position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000; padding: 20px; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -134,7 +137,7 @@
             <button class="btn-menu-item btn-yt" onclick="abrirYouTube()">
                 <div class="yt-premium-logo">
                     <div class="yt-icon"><div class="yt-play"></div></div>
-                    <span style="color:white; font-weight:800;">YouTube Premium</span>
+                    <span style="color:white; font-weight:800; margin-left:5px;">YouTube Premium</span>
                 </div>
             </button>
             <button class="btn-menu-item btn-salir" onclick="window.location.href='/logout'">🚪 Cerrar Sesión</button>
@@ -147,16 +150,6 @@
         <div id="lista-cartones" style="width:100%; max-width:400px; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column; gap:15px;"></div>
         <button onclick="document.getElementById('historial-overlay').style.display='none'" class="btn-cerrar-menu">CERRAR</button>
     </div>
-
-    <div id="imagen-modal-overlay">
-        <div style="background:#000; padding:20px; border:2px solid var(--acento); border-radius:20px; width:100%; max-width:380px; text-align:center;">
-            <img id="carton-imagen-display" src="" style="width:100%; border-radius:10px; margin-bottom:15px; border:1px solid #333;">
-            <button onclick="descargarImagen()" style="width:100%; background:var(--acento); padding:15px; border:none; border-radius:10px; font-weight:900; cursor:pointer; font-size: 1rem; margin-bottom: 10px;">DESCARGAR CARTÓN</button>
-            <button onclick="cerrarModalImagen()" style="width:100%; background:#333; color:#fff; padding:12px; border:none; border-radius:10px; font-weight:900; cursor:pointer;">LISTO</button>
-        </div>
-    </div>
-
-    <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
 
     <div class="app-container">
         <div class="header">
@@ -183,6 +176,8 @@
         <div class="footer"><button class="btn-confirmar" onclick="intentarGuardar()">GUARDAR JUGADA</button></div>
     </div>
 
+    <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
@@ -206,10 +201,8 @@
         function votar(el) { const fila = el.closest('.fila'); fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
         function mostrarModal(titulo, mensaje, tipo, accion) { const modalOverlay = document.getElementById('overlay-modal'); document.getElementById('m-titulo').innerText = titulo; document.getElementById('m-mensaje').innerText = mensaje; const cajaBotones = document.getElementById('m-botones'); cajaBotones.innerHTML = ''; modalOverlay.style.display = 'flex'; const btnOk = document.createElement('button'); btnOk.innerText = tipo === 'confirmar' ? 'SÍ, PAGAR' : 'CERRAR'; btnOk.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:var(--azul-neon); cursor:pointer;"; btnOk.onclick = () => { modalOverlay.style.display = 'none'; if(accion) accion(); }; if(tipo === 'confirmar') { const btnCan = document.createElement('button'); btnCan.innerText = 'NO'; btnCan.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:#333; color:#fff; cursor:pointer;"; btnCan.onclick = () => modalOverlay.style.display = 'none'; cajaBotones.appendChild(btnCan); } cajaBotones.appendChild(btnOk); }
         function intentarGuardar() { if (document.querySelectorAll('.btn-lev.active').length < 15) { mostrarModal("⚠️ ATENCIÓN", "Completá los 15 partidos.", "aviso"); } else { mostrarModal("⚽ CONFIRMAR", "¿Pagar jugada $100?", "confirmar", procesarJugada); } }
-        async function procesarJugada() { /* lógica original */ }
+        async function procesarJugada() { /* lógica original de tu servidor externo */ }
         async function abrirHistorial() { /* lógica original */ }
-        function descargarImagen() { const link = document.createElement('a'); link.href = document.getElementById('carton-imagen-display').src; link.download = `Ticket_Prode_${nombreUsuario}.png`; link.click(); }
-        function cerrarModalImagen() { location.reload(); }
     </script>
 </body>
 </html>
