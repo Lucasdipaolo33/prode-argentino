@@ -14,7 +14,6 @@
             --error: #ff4444;
             --texto: #ffffff;
             --blanco-badge: #f0f0f0;
-            /* Colores para botones con cuerpo */
             --btn-comprobantes: #2563eb;
             --btn-saldo: #16a34a;
             --btn-youtube: #cc0000;
@@ -56,7 +55,7 @@
 
         .fecha-badge { background: var(--blanco-badge); color: #000; font-size: 0.7rem; font-weight: 900; padding: 8px 5px; border-radius: 8px; width: 75px; text-align: center; }
 
-        /* --- MENÚ OVERLAY CON BOTONES CON CUERPO --- */
+        /* --- MENÚ OVERLAY --- */
         #menu-overlay {
             display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
@@ -85,15 +84,7 @@
 
         .btn-cerrar-menu { margin-top: 50px; background: transparent; color: #ffffff; border: 2px solid #ffffff; padding: 12px 40px; border-radius: 50px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        /* --- YOUTUBE OVERLAY --- */
-        #youtube-overlay {
-            display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px;
-            height: 100%; background: #0f0f0f; z-index: 8000; flex-direction: column;
-        }
-        .yt-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #0f0f0f; border-bottom: 1px solid #333; }
-        #yt-frame { width: 100%; height: calc(100% - 50px); border: none; background: #0f0f0f; }
-
-        /* --- PANEL DE PARTIDOS (ORIGINAL) --- */
+        /* --- PANEL DE PARTIDOS --- */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { background: rgba(51, 153, 255, 0.1); border: 2px solid var(--azul-neon); box-shadow: 0 0 10px rgba(51, 153, 255, 0.4); border-radius: 15px; padding: 15px 12px; display: flex; align-items: center; justify-content: space-between; }
         .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
@@ -110,7 +101,6 @@
         #overlay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 7500; justify-content: center; align-items: center; padding: 20px; }
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
 
-        /* --- TICKET RENDER INVISIBLE (FORMATO ORIGINAL RESTAURADO) --- */
         #ticket-render {
             position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
             padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
@@ -138,28 +128,19 @@
         </div>
     </div>
 
-    <div id="youtube-overlay">
-        <div class="yt-header">
-            <div class="yt-premium-logo">
-                <div class="yt-icon"><div class="yt-play"></div></div>
-                <span style="color:white; font-weight:bold; font-size:1.1rem;">Premium</span>
-            </div>
-            <button onclick="cerrarYouTube()" style="background:none; border:none; color:white; font-size:24px;">✕</button>
-        </div>
-        <iframe id="yt-frame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-
     <div id="menu-overlay">
         <div class="menu-title">OPCIONES</div>
         <div class="menu-grid">
             <button class="btn-menu-item btn-historial" onclick="abrirHistorial()">📸 Mis Comprobantes</button>
             <button class="btn-menu-item btn-cargar" onclick="alert('Contactate con el administrador para cargar saldo.')">💰 Cargar Saldo</button>
+            
             <button class="btn-menu-item btn-yt" onclick="abrirYouTube()">
                 <div class="yt-premium-logo">
                     <div class="yt-icon"><div class="yt-play"></div></div>
                     <span style="color:white; font-weight:800; margin-left:5px;">YouTube Premium</span>
                 </div>
             </button>
+
             <button class="btn-menu-item btn-salir" onclick="window.location.href='/logout'">🚪 Cerrar Sesión</button>
         </div>
         <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
@@ -218,14 +199,12 @@
             const menu = document.getElementById('menu-overlay');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
+
+        // FUNCIÓN LIMPIA: Lista para recibir la redirección
         function abrirYouTube() {
-            document.getElementById('yt-frame').src = "https://m.youtube.com/?theme=dark";
-            document.getElementById('youtube-overlay').style.display = 'flex';
+            // Aquí irá la conexión cuando tengas app.py listo
         }
-        function cerrarYouTube() {
-            document.getElementById('youtube-overlay').style.display = 'none';
-            document.getElementById('yt-frame').src = "";
-        }
+
         function votar(el) { const fila = el.closest('.fila'); fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
 
         function mostrarModal(titulo, mensaje, tipo, accion) {
