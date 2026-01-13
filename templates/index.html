@@ -14,6 +14,7 @@
             --error: #ff4444;
             --texto: #ffffff;
             --blanco-badge: #f0f0f0;
+            /* Colores para botones con cuerpo */
             --btn-comprobantes: #2563eb;
             --btn-saldo: #16a34a;
             --btn-youtube: #cc0000;
@@ -41,6 +42,7 @@
             position: relative;
         }
 
+        /* --- CABECERA --- */
         .header {
             width: 100%; padding: 15px; display: flex; justify-content: space-between; align-items: center;
             background: #000; border-bottom: 3px solid var(--azul-neon); position: sticky; top: 0; z-index: 100;
@@ -54,7 +56,7 @@
 
         .fecha-badge { background: var(--blanco-badge); color: #000; font-size: 0.7rem; font-weight: 900; padding: 8px 5px; border-radius: 8px; width: 75px; text-align: center; }
 
-        /* --- MENÚ OVERLAY CON CUERPO --- */
+        /* --- MENÚ OVERLAY CON BOTONES CON CUERPO --- */
         #menu-overlay {
             display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
@@ -91,7 +93,7 @@
         .yt-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #0f0f0f; border-bottom: 1px solid #333; }
         #yt-frame { width: 100%; height: calc(100% - 50px); border: none; background: #0f0f0f; }
 
-        /* --- PANEL DE PARTIDOS --- */
+        /* --- PANEL DE PARTIDOS (ORIGINAL) --- */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { background: rgba(51, 153, 255, 0.1); border: 2px solid var(--azul-neon); box-shadow: 0 0 10px rgba(51, 153, 255, 0.4); border-radius: 15px; padding: 15px 12px; display: flex; align-items: center; justify-content: space-between; }
         .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
@@ -102,20 +104,39 @@
         .footer { padding: 15px; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: sticky; bottom: 0; border-top: 1px solid #1e293b; z-index: 90; }
         .btn-confirmar { width: 100%; padding: 18px; background: linear-gradient(45deg, #0052D4, #3399ff); border: none; border-radius: 15px; color: white; font-weight: 900; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; }
 
-        /* --- MODALES Y TICKETS --- */
+        /* --- MODALES --- */
         #historial-overlay { display: none; position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; height: 100%; background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
         #imagen-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; padding: 20px; }
         #overlay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 7500; justify-content: center; align-items: center; padding: 20px; }
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
-        
-        /* --- TICKET ORIGINAL ESTILOS --- */
-        #ticket-render { position: fixed; left: -9999px; top: 0; width: 400px; background: #fff; color: #000; padding: 20px; }
-        .t-header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 10px; }
-        .t-table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 14px; }
-        .t-table td { padding: 4px 0; border-bottom: 1px solid #eee; }
+
+        /* --- TICKET RENDER INVISIBLE (FORMATO ORIGINAL RESTAURADO) --- */
+        #ticket-render {
+            position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
+            padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
+
+    <div id="ticket-render">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 10px;">
+            <h2 style="margin: 0; font-size: 22px; letter-spacing: 1px;">PRODE ARGENTINO</h2>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
+                <span style="background: #000; color: #fff; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">FECHA 1</span>
+                <span style="border: 1.5px solid #000; padding: 2px 10px; border-radius: 3px; font-weight: 900; font-size: 12px;">VALOR: $100</span>
+            </div>
+            <p id="t-id" style="margin: 8px 0 0 0; font-size: 12px; font-weight: bold; font-family: monospace;"></p>
+        </div>
+        <div style="font-size: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px dashed #aaa; padding-bottom: 5px;">
+            <span><b>USUARIO:</b> <span id="t-user"></span></span>
+            <span id="t-fecha"></span>
+        </div>
+        <div id="t-partidos"></div>
+        <div style="text-align: center; border-top: 1px solid #000; margin-top: 15px; padding-top: 10px; font-size: 10px; font-weight: 900;">
+            *** COMPROBANTE OFICIAL ***
+        </div>
+    </div>
 
     <div id="youtube-overlay">
         <div class="yt-header">
@@ -129,7 +150,7 @@
     </div>
 
     <div id="menu-overlay">
-        <div class="menu-title">MENU</div>
+        <div class="menu-title">OPCIONES</div>
         <div class="menu-grid">
             <button class="btn-menu-item btn-historial" onclick="abrirHistorial()">📸 Mis Comprobantes</button>
             <button class="btn-menu-item btn-cargar" onclick="alert('Contactate con el administrador para cargar saldo.')">💰 Cargar Saldo</button>
@@ -158,30 +179,7 @@
         </div>
     </div>
 
-    <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff; font-size:1.2rem; margin-bottom:10px;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
-
-    <div id="ticket-render">
-        <div class="t-header">
-            <h1 style="margin:0; font-size:24px;">PRODE ARGENTINO</h1>
-            <p style="margin:5px 0;" id="t-fecha-actual"></p>
-        </div>
-        <div style="margin-bottom:15px;">
-            <strong>CLIENTE:</strong> <span id="t-usuario"></span><br>
-            <strong>ESTADO:</strong> PAGADO
-        </div>
-        <table class="t-table">
-            <thead>
-                <tr style="border-bottom:2px solid #000;">
-                    <th align="left">PARTIDO</th>
-                    <th align="right">VOTO</th>
-                </tr>
-            </thead>
-            <tbody id="t-partidos-body"></tbody>
-        </table>
-        <div style="margin-top:20px; text-align:center; font-size:12px; border-top:1px dashed #000; padding-top:10px;">
-            GRACIAS POR TU JUGADA - WWW.PRODEARG.COM
-        </div>
-    </div>
+    <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
 
     <div class="app-container">
         <div class="header">
@@ -210,9 +208,11 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
         const nombreUsuario = "{{ usuario }}";
         let saldoActual = parseInt("{{ saldo }}");
+
+        function formatearMoneda(valor) { return "$" + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+        document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
 
         function toggleMenu() {
             const menu = document.getElementById('menu-overlay');
@@ -226,14 +226,7 @@
             document.getElementById('youtube-overlay').style.display = 'none';
             document.getElementById('yt-frame').src = "";
         }
-        function formatearMoneda(valor) { return "$" + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
-        document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
-
-        function votar(el) {
-            const fila = el.closest('.fila');
-            fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-        }
+        function votar(el) { const fila = el.closest('.fila'); fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
 
         function mostrarModal(titulo, mensaje, tipo, accion) {
             const modalOverlay = document.getElementById('overlay-modal');
@@ -257,72 +250,86 @@
         }
 
         function intentarGuardar() {
-            const selecciones = document.querySelectorAll('.btn-lev.active');
-            if (selecciones.length < 15) {
-                mostrarModal("⚠️ ATENCIÓN", "Completa los 15 partidos.", "aviso");
-                return;
+            if (document.querySelectorAll('.btn-lev.active').length < 15) {
+                mostrarModal("⚠️ ATENCIÓN", "Completá los 15 partidos.", "aviso");
+            } else {
+                mostrarModal("⚽ CONFIRMAR", "¿Pagar jugada $100?", "confirmar", procesarJugada);
             }
-            if (saldoActual < 100) {
-                mostrarModal("❌ SALDO INSUFICIENTE", "Necesitas $100.", "aviso");
-                return;
-            }
-            mostrarModal("⚽ CONFIRMAR JUGADA", "¿Deseas pagar $100?", "confirmar", procesarJugada);
         }
 
         async function procesarJugada() {
-            const filas = document.querySelectorAll('.fila');
-            const tbody = document.getElementById('t-partidos-body');
-            tbody.innerHTML = "";
-            
-            filas.forEach(f => {
+            let predicciones = {};
+            let htmlTicket = "";
+            document.querySelectorAll('.fila').forEach((f, i) => {
                 const local = f.querySelector('.local').innerText;
-                const visita = f.querySelector('.visitante').innerText;
-                const voto = f.querySelector('.btn-lev.active').innerText;
-                const tr = `<tr><td>${local} vs ${visita}</td><td align="right"><b>${voto}</b></td></tr>`;
-                tbody.innerHTML += tr;
+                const visitante = f.querySelector('.visitante').innerText;
+                const e = f.querySelector('.active').innerText;
+                predicciones[i+1] = e;
+                htmlTicket += `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="width:35%; font-weight:900; font-size:11px;">${local}</span>
+                    <div style="width:30%; display:flex; justify-content:center; gap:3px;">
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='L'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='E'?'X':''}</div>
+                        <div style="width:16px; height:16px; border:1px solid #000; text-align:center; font-size:10px; line-height:16px; font-weight:bold;">${e=='V'?'X':''}</div>
+                    </div>
+                    <span style="width:35%; font-weight:900; font-size:11px; text-align:right;">${visitante}</span>
+                </div>`;
             });
 
-            document.getElementById('t-usuario').innerText = nombreUsuario;
-            document.getElementById('t-fecha-actual').innerText = new Date().toLocaleString();
+            const response = await fetch('/guardar_jugada', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ predicciones: predicciones })
+            });
 
-            const canvas = await html2canvas(document.getElementById('ticket-render'), { scale: 2 });
-            const imgData = canvas.toDataURL('image/png');
+            const res = await response.json();
+            if (response.ok) {
+                const ahora = new Date();
+                const horaArg = ahora.toLocaleString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
+                document.getElementById('t-id').innerText = "TICKET #" + res.id_ticket;
+                document.getElementById('t-user').innerText = nombreUsuario.toUpperCase();
+                document.getElementById('t-fecha').innerText = horaArg;
+                document.getElementById('t-partidos').innerHTML = htmlTicket;
+                document.getElementById('display-saldo').innerText = formatearMoneda(res.saldo_nuevo);
 
-            try {
-                const response = await fetch('/guardar_jugada', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ imagen: imgData, usuario: nombreUsuario })
-                });
-
-                if (response.ok) {
-                    saldoActual -= 100;
-                    document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
-                    document.getElementById('carton-imagen-display').src = imgData;
+                html2canvas(document.getElementById('ticket-render'), { scale: 3 }).then(canvas => {
+                    const imageData = canvas.toDataURL('image/png');
+                    fetch('/guardar_imagen_carton', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ imageData: imageData })
+                    });
+                    document.getElementById('carton-imagen-display').src = imageData;
                     document.getElementById('imagen-modal-overlay').style.display = 'flex';
-                }
-            } catch (e) { alert("Error al conectar."); }
+                });
+            } else {
+                mostrarModal("❌ ERROR", res.mensaje, "aviso");
+            }
         }
 
         async function abrirHistorial() {
-            const res = await fetch(`/obtener_historial?usuario=${nombreUsuario}`);
-            const datos = await res.json();
             const lista = document.getElementById('lista-cartones');
-            lista.innerHTML = "";
-            datos.forEach(c => {
-                const img = document.createElement('img');
-                img.src = c.url;
-                img.style.width = "100%";
-                img.style.borderRadius = "10px";
-                lista.appendChild(img);
-            });
+            lista.innerHTML = '<p style="text-align:center;">Cargando...</p>';
             document.getElementById('historial-overlay').style.display = 'flex';
+            toggleMenu();
+            const r = await fetch(`/mis_comprobantes/${nombreUsuario}`);
+            const d = await r.json();
+            if(d.fotos && d.fotos.length > 0) {
+                lista.innerHTML = '';
+                d.fotos.reverse().forEach(url => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.style.cssText = "width:100%; border-radius:10px; border:1px solid #333; margin-bottom:10px;";
+                    lista.appendChild(img);
+                });
+            } else { lista.innerHTML = '<p style="text-align:center;">No tenés jugadas.</p>'; }
         }
 
         function descargarImagen() {
             const link = document.createElement('a');
             link.href = document.getElementById('carton-imagen-display').src;
-            link.download = `Ticket_${nombreUsuario}.png`;
+            link.download = `Ticket_Prode_${nombreUsuario}.png`;
             link.click();
         }
         function cerrarModalImagen() { location.reload(); }
