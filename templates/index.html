@@ -55,7 +55,7 @@
 
         .fecha-badge { background: var(--blanco-badge); color: #000; font-size: 0.7rem; font-weight: 900; padding: 8px 5px; border-radius: 8px; width: 75px; text-align: center; }
 
-        /* --- MENÚ OVERLAY MODIFICADO --- */
+        /* --- MENÚ OVERLAY --- */
         #menu-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
@@ -81,9 +81,9 @@
         .yt-icon { width: 28px; height: 20px; background: red; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
         .yt-play { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid white; margin-left: 2px; }
 
-        .btn-cerrar-menu { margin-top: 50px; background: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 12px 40px; border-radius: 50px; font-weight: 700; cursor: pointer; text-transform: uppercase; opacity: 0.9; }
+        .btn-cerrar-menu { margin-top: 50px; background: transparent; color: #ffffff; border: 1px solid #ffffff; padding: 12px 40px; border-radius: 50px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        /* --- CAPA YOUTUBE PREMIUM --- */
+        /* --- YOUTUBE OVERLAY --- */
         #youtube-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0f0f0f; z-index: 8000; flex-direction: column;
@@ -91,7 +91,13 @@
         .yt-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #0f0f0f; border-bottom: 1px solid #333; }
         #yt-frame { width: 100%; height: calc(100% - 50px); border: none; background: #0f0f0f; }
 
-        /* --- PARTIDOS --- */
+        /* --- HISTORIAL Y OTROS --- */
+        #historial-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { background: rgba(51, 153, 255, 0.1); border: 2px solid var(--azul-neon); box-shadow: 0 0 10px rgba(51, 153, 255, 0.4); border-radius: 15px; padding: 15px 12px; display: flex; align-items: center; justify-content: space-between; }
         .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
@@ -125,14 +131,12 @@
         <div class="menu-grid">
             <button class="btn-menu-item btn-historial" onclick="abrirHistorial()">📸 Mis Comprobantes</button>
             <button class="btn-menu-item btn-cargar" onclick="alert('Contactate con el administrador para cargar saldo.')">💰 Cargar Saldo</button>
-            
             <button class="btn-menu-item btn-yt" onclick="abrirYouTube()">
                 <div class="yt-premium-logo">
                     <div class="yt-icon"><div class="yt-play"></div></div>
                     <span>Premium</span>
                 </div>
             </button>
-
             <button class="btn-menu-item btn-salir" onclick="window.location.href='/logout'">🚪 Cerrar Sesión</button>
         </div>
         <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
@@ -181,37 +185,30 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
 
         const nombreUsuario = "{{ usuario }}";
         let saldoActual = parseInt("{{ saldo }}");
 
         function abrirYouTube() {
-            const overlay = document.getElementById('youtube-overlay');
-            const frame = document.getElementById('yt-frame');
-            frame.src = "https://m.youtube.com/?theme=dark";
-            overlay.style.display = 'flex';
+            document.getElementById('yt-frame').src = "https://m.youtube.com/?theme=dark";
+            document.getElementById('youtube-overlay').style.display = 'flex';
         }
-
         function cerrarYouTube() {
             document.getElementById('youtube-overlay').style.display = 'none';
             document.getElementById('yt-frame').src = "";
         }
-
         function toggleMenu() {
             const menu = document.getElementById('menu-overlay');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
-
         function formatearMoneda(valor) { return "$" + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
         document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
         function votar(el) { const fila = el.closest('.fila'); fila.querySelectorAll('.btn-lev').forEach(b => b.classList.remove('active')); el.classList.add('active'); }
         function mostrarModal(titulo, mensaje, tipo, accion) { const modalOverlay = document.getElementById('overlay-modal'); document.getElementById('m-titulo').innerText = titulo; document.getElementById('m-mensaje').innerText = mensaje; const cajaBotones = document.getElementById('m-botones'); cajaBotones.innerHTML = ''; modalOverlay.style.display = 'flex'; const btnOk = document.createElement('button'); btnOk.innerText = tipo === 'confirmar' ? 'SÍ, PAGAR' : 'CERRAR'; btnOk.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:var(--azul-neon); cursor:pointer;"; btnOk.onclick = () => { modalOverlay.style.display = 'none'; if(accion) accion(); }; if(tipo === 'confirmar') { const btnCan = document.createElement('button'); btnCan.innerText = 'NO'; btnCan.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:#333; color:#fff; cursor:pointer;"; btnCan.onclick = () => modalOverlay.style.display = 'none'; cajaBotones.appendChild(btnCan); } cajaBotones.appendChild(btnOk); }
         function intentarGuardar() { if (document.querySelectorAll('.btn-lev.active').length < 15) { mostrarModal("⚠️ ATENCIÓN", "Completá los 15 partidos.", "aviso"); } else { mostrarModal("⚽ CONFIRMAR", "¿Pagar jugada $100?", "confirmar", procesarJugada); } }
-        async function procesarJugada() { /* ... tu lógica de fetch ... */ }
-        async function abrirHistorial() { /* ... tu lógica de historial ... */ }
+        async function procesarJugada() { /* lógica fetch prode original */ }
+        async function abrirHistorial() { /* lógica historial original */ }
         function descargarImagen() { const link = document.createElement('a'); link.href = document.getElementById('carton-imagen-display').src; link.download = `Ticket_Prode_${nombreUsuario}.png`; link.click(); }
         function cerrarModalImagen() { location.reload(); }
     </script>
