@@ -14,6 +14,10 @@
             --error: #ff4444;
             --texto: #ffffff;
             --blanco-badge: #f0f0f0;
+            /* Colores nuevos para botones */
+            --btn-comprobantes: #4a90e2;
+            --btn-saldo: #2ecc71;
+            --btn-youtube: #ff0000;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -56,7 +60,9 @@
             font-weight: 900; font-size: 0.7rem;
             text-transform: uppercase; cursor: pointer;
             width: 75px;
+            transition: transform 0.1s;
         }
+        .btn-menu-top:active { transform: scale(0.9); }
 
         .user-info { display: flex; flex-direction: column; align-items: center; flex-grow: 1; }
         .usuario-txt { color: #fff; font-size: 0.95rem; font-weight: 900; text-transform: uppercase; opacity: 0.9; }
@@ -69,21 +75,56 @@
             width: 75px; text-align: center;
         }
 
-        #menu-overlay, #historial-overlay {
+        /* --- NUEVO ESTILO DE MENÚ --- */
+        #menu-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
+            align-items: center; justify-content: center; padding: 25px;
+        }
+
+        .menu-title { 
+            color: #fff; font-size: 1.8rem; font-weight: 900; 
+            margin-bottom: 40px; letter-spacing: 3px;
+            text-shadow: 0 0 10px var(--azul-neon);
+        }
+
+        .menu-grid { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; }
+
+        .btn-menu-item {
+            width: 100%; padding: 20px; 
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; color: #fff; font-weight: 700;
+            text-transform: uppercase; font-size: 0.95rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.2s ease;
+            position: relative; overflow: hidden;
+        }
+
+        /* Colores individuales y efectos de presión */
+        .btn-menu-item:active { transform: scale(0.96); filter: brightness(1.2); }
+
+        .btn-historial { background: rgba(74, 144, 226, 0.15); border-left: 5px solid var(--btn-comprobantes); }
+        .btn-cargar { background: rgba(46, 204, 113, 0.15); border-left: 5px solid var(--btn-saldo); }
+        .btn-yt { background: rgba(255, 0, 0, 0.1); border-left: 5px solid var(--btn-youtube); }
+        .btn-salir { background: rgba(255, 68, 68, 0.1); border-left: 5px solid var(--error); }
+
+        /* Estilo logo YouTube Premium */
+        .yt-premium-logo { display: flex; align-items: center; gap: 6px; }
+        .yt-icon { width: 28px; height: 20px; background: red; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .yt-play { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid white; margin-left: 2px; }
+
+        .btn-cerrar-menu { 
+            margin-top: 50px; background: transparent; color: #666; 
+            border: 1px solid #333; padding: 12px 30px; border-radius: 50px; 
+            font-weight: 700; cursor: pointer; text-transform: uppercase; 
+        }
+
+        /* --- RESTO DE ESTILOS --- */
+        #historial-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 6000; flex-direction: column;
             align-items: center; justify-content: center; padding: 20px;
         }
-
-        .menu-title { color: var(--azul-neon); font-size: 1.5rem; font-weight: 900; margin-bottom: 30px; letter-spacing: 2px; }
-        .btn-menu-item {
-            width: 100%; padding: 18px; background: #111; border: 1px solid #333;
-            border-radius: 12px; color: #fff; font-weight: 700;
-            text-transform: uppercase; font-size: 0.9rem; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-        }
-
-        .btn-cerrar-menu { margin-top: 40px; background: var(--error); color: #fff; border: none; padding: 15px 40px; border-radius: 50px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { 
@@ -109,7 +150,6 @@
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
         #carton-imagen-display { width: 100%; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
 
-        /* TICKET RENDER INVISIBLE */
         #ticket-render {
             position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000;
             padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif;
@@ -138,13 +178,32 @@
     </div>
 
     <div id="menu-overlay">
-        <div class="menu-title">OPCIONES</div>
+        <div class="menu-title">APP MANAGER</div>
         <div class="menu-grid">
-            <button class="btn-menu-item" onclick="abrirHistorial()">📸 MIS COMPROBANTES <span>></span></button>
-            <button class="btn-menu-item" onclick="alert('Contactate con el administrador para cargar saldo.')">💰 CARGAR SALDO <span>></span></button>
-            <button class="btn-menu-item" onclick="window.location.href='/logout'" style="color:var(--error)">🚪 CERRAR SESIÓN</button>
+            <button class="btn-menu-item btn-historial" onclick="abrirHistorial()">
+                <span>📸 Mis Comprobantes</span>
+                <span>❯</span>
+            </button>
+            
+            <button class="btn-menu-item btn-cargar" onclick="alert('Contactate con el administrador para cargar saldo.')">
+                <span>💰 Cargar Saldo</span>
+                <span>❯</span>
+            </button>
+
+            <button class="btn-menu-item btn-yt" onclick="alert('Próximamente: YouTube Premium sin anuncios')">
+                <div class="yt-premium-logo">
+                    <div class="yt-icon"><div class="yt-play"></div></div>
+                    <span>Premium</span>
+                </div>
+                <span>❯</span>
+            </button>
+
+            <button class="btn-menu-item btn-salir" onclick="window.location.href='/logout'">
+                <span>🚪 Cerrar Sesión</span>
+                <span>❯</span>
+            </button>
         </div>
-        <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER</button>
+        <button class="btn-cerrar-menu" onclick="toggleMenu()">VOLVER AL PRODE</button>
     </div>
 
     <div id="historial-overlay">
@@ -270,7 +329,6 @@
 
             const res = await response.json();
             if (response.ok) {
-                // HORA ARGENTINA
                 const ahora = new Date();
                 const horaArg = ahora.toLocaleString("es-AR", {timeZone: "America/Argentina/Buenos_Aires"});
                 
