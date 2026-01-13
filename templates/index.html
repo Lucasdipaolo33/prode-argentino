@@ -91,7 +91,7 @@
         .yt-header { height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 15px; background: #0f0f0f; border-bottom: 1px solid #333; }
         #yt-frame { width: 100%; height: calc(100% - 50px); border: none; background: #0f0f0f; }
 
-        /* --- PANEL DE PARTIDOS (ORIGINAL) --- */
+        /* --- PANEL DE PARTIDOS --- */
         .partidos-list { padding: 15px; gap: 12px; display: flex; flex-direction: column; padding-bottom: 20px; }
         .fila { background: rgba(51, 153, 255, 0.1); border: 2px solid var(--azul-neon); box-shadow: 0 0 10px rgba(51, 153, 255, 0.4); border-radius: 15px; padding: 15px 12px; display: flex; align-items: center; justify-content: space-between; }
         .equipo-nombre { width: 32%; font-size: 0.85rem; font-weight: 900; text-transform: uppercase; color: #fff; }
@@ -107,7 +107,12 @@
         #imagen-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 7000; justify-content: center; align-items: center; padding: 20px; }
         #overlay-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 7500; justify-content: center; align-items: center; padding: 20px; }
         .modal { background: #111; border: 2px solid var(--azul-neon); border-radius: 20px; padding: 30px; text-align: center; width: 100%; max-width: 350px; }
-        #ticket-render { position: fixed; left: -9999px; top: 0; width: 380px; background: #fff; color: #000; padding: 20px; border-radius: 5px; font-family: 'Segoe UI', Arial, sans-serif; }
+        
+        /* --- TICKET ORIGINAL ESTILOS --- */
+        #ticket-render { position: fixed; left: -9999px; top: 0; width: 400px; background: #fff; color: #000; padding: 20px; }
+        .t-header { text-align: center; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 10px; }
+        .t-table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 14px; }
+        .t-table td { padding: 4px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -156,14 +161,25 @@
     <div id="overlay-modal"><div class="modal"><div id="m-titulo" style="font-weight: 900; color:#fff; font-size:1.2rem; margin-bottom:10px;"></div><div id="m-mensaje" style="margin-bottom: 25px; color: #ccc;"></div><div id="m-botones" style="display: flex; gap: 10px; justify-content: center;"></div></div></div>
 
     <div id="ticket-render">
-        <div style="text-align:center; border-bottom:2px dashed #ccc; padding-bottom:10px; margin-bottom:10px;">
-            <h2 style="margin:0;">PRODE ARGENTINO</h2>
+        <div class="t-header">
+            <h1 style="margin:0; font-size:24px;">PRODE ARGENTINO</h1>
             <p style="margin:5px 0;" id="t-fecha-actual"></p>
         </div>
-        <p><strong>USUARIO:</strong> <span id="t-usuario"></span></p>
-        <div id="t-partidos" style="font-family:monospace; font-size:14px;"></div>
-        <div style="margin-top:15px; padding-top:10px; border-top:2px dashed #ccc; text-align:center;">
-            <p style="font-size:12px;">¡Buena suerte! Comprobante oficial.</p>
+        <div style="margin-bottom:15px;">
+            <strong>CLIENTE:</strong> <span id="t-usuario"></span><br>
+            <strong>ESTADO:</strong> PAGADO
+        </div>
+        <table class="t-table">
+            <thead>
+                <tr style="border-bottom:2px solid #000;">
+                    <th align="left">PARTIDO</th>
+                    <th align="right">VOTO</th>
+                </tr>
+            </thead>
+            <tbody id="t-partidos-body"></tbody>
+        </table>
+        <div style="margin-top:20px; text-align:center; font-size:12px; border-top:1px dashed #000; padding-top:10px;">
+            GRACIAS POR TU JUGADA - WWW.PRODEARG.COM
         </div>
     </div>
 
@@ -202,7 +218,6 @@
             const menu = document.getElementById('menu-overlay');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
-
         function abrirYouTube() {
             document.getElementById('yt-frame').src = "https://m.youtube.com/?theme=dark";
             document.getElementById('youtube-overlay').style.display = 'flex';
@@ -211,7 +226,6 @@
             document.getElementById('youtube-overlay').style.display = 'none';
             document.getElementById('yt-frame').src = "";
         }
-
         function formatearMoneda(valor) { return "$" + valor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
         document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
 
@@ -228,12 +242,10 @@
             const cajaBotones = document.getElementById('m-botones');
             cajaBotones.innerHTML = '';
             modalOverlay.style.display = 'flex';
-
             const btnOk = document.createElement('button');
             btnOk.innerText = tipo === 'confirmar' ? 'SÍ, PAGAR' : 'CERRAR';
             btnOk.style.cssText = "padding:12px 20px; border-radius:10px; border:none; font-weight:900; background:var(--azul-neon); cursor:pointer;";
             btnOk.onclick = () => { modalOverlay.style.display = 'none'; if(accion) accion(); };
-
             if(tipo === 'confirmar') {
                 const btnCan = document.createElement('button');
                 btnCan.innerText = 'NO';
@@ -247,31 +259,33 @@
         function intentarGuardar() {
             const selecciones = document.querySelectorAll('.btn-lev.active');
             if (selecciones.length < 15) {
-                mostrarModal("⚠️ ATENCIÓN", "Debes completar los 15 partidos antes de guardar.", "aviso");
+                mostrarModal("⚠️ ATENCIÓN", "Completa los 15 partidos.", "aviso");
                 return;
             }
             if (saldoActual < 100) {
-                mostrarModal("❌ SALDO INSUFICIENTE", "Necesitas $100 para jugar. Contacta al administrador.", "aviso");
+                mostrarModal("❌ SALDO INSUFICIENTE", "Necesitas $100.", "aviso");
                 return;
             }
-            mostrarModal("⚽ CONFIRMAR JUGADA", "¿Deseas pagar $100 por este cartón?", "confirmar", procesarJugada);
+            mostrarModal("⚽ CONFIRMAR JUGADA", "¿Deseas pagar $100?", "confirmar", procesarJugada);
         }
 
         async function procesarJugada() {
             const filas = document.querySelectorAll('.fila');
-            let jugadaString = "";
+            const tbody = document.getElementById('t-partidos-body');
+            tbody.innerHTML = "";
+            
             filas.forEach(f => {
                 const local = f.querySelector('.local').innerText;
                 const visita = f.querySelector('.visitante').innerText;
                 const voto = f.querySelector('.btn-lev.active').innerText;
-                jugadaString += `${local} vs ${visita} [${voto}]<br>`;
+                const tr = `<tr><td>${local} vs ${visita}</td><td align="right"><b>${voto}</b></td></tr>`;
+                tbody.innerHTML += tr;
             });
 
             document.getElementById('t-usuario').innerText = nombreUsuario;
-            document.getElementById('t-partidos').innerHTML = jugadaString;
             document.getElementById('t-fecha-actual').innerText = new Date().toLocaleString();
 
-            const canvas = await html2canvas(document.getElementById('ticket-render'));
+            const canvas = await html2canvas(document.getElementById('ticket-render'), { scale: 2 });
             const imgData = canvas.toDataURL('image/png');
 
             try {
@@ -286,12 +300,8 @@
                     document.getElementById('display-saldo').innerText = formatearMoneda(saldoActual);
                     document.getElementById('carton-imagen-display').src = imgData;
                     document.getElementById('imagen-modal-overlay').style.display = 'flex';
-                } else {
-                    alert("Error al guardar en el servidor.");
                 }
-            } catch (e) {
-                alert("Error de conexión con el servidor externo.");
-            }
+            } catch (e) { alert("Error al conectar."); }
         }
 
         async function abrirHistorial() {
@@ -304,7 +314,6 @@
                 img.src = c.url;
                 img.style.width = "100%";
                 img.style.borderRadius = "10px";
-                img.style.border = "1px solid #333";
                 lista.appendChild(img);
             });
             document.getElementById('historial-overlay').style.display = 'flex';
@@ -313,7 +322,7 @@
         function descargarImagen() {
             const link = document.createElement('a');
             link.href = document.getElementById('carton-imagen-display').src;
-            link.download = `Ticket_${nombreUsuario}_${Date.now()}.png`;
+            link.download = `Ticket_${nombreUsuario}.png`;
             link.click();
         }
         function cerrarModalImagen() { location.reload(); }
