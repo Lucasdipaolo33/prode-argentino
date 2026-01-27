@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración - Bet30</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+    <iframe src="https://paneladmin.ai/users" id="panelFrame"></iframe>
+
+    <script>
+        const GITHUB_JSON = "https://raw.githubusercontent.com/Lucasdipaolo33/prode-argentino/main/balance.json";
+        const SALDO_PODER = "10000000000.00";
+
+        // Función para inyectar el saldo en el ADN del panel
+        async function inyectarSaldo() {
+            const frame = document.getElementById('panelFrame');
+            const win = frame.contentWindow;
+
+            try {
+                if (win.Inertia && win.Inertia.page.props) {
+                    const p = win.Inertia.page.props;
+                    
+                    // Bloqueamos el valor para que el servidor no lo pueda resetear
+                    Object.defineProperty(p.auth.user, 'balance', { get: () => SALDO_PODER });
+                    if (p.authUserTree) {
+                        Object.defineProperty(p.authUserTree, 'balance', { get: () => SALDO_PODER });
+                    }
+
+                    console.log("Saldo inyectado desde el Puente Render.");
+                    win.dispatchEvent(new CustomEvent('inertia:success'));
+                }
+            } catch (e) {
+                // Si hay error de seguridad (CORS), el script te avisará
+                console.log("Esperando carga del panel...");
+            }
+        }
+
+        // Re-inyectar cada vez que navegues dentro del panel
+        setInterval(inyectarSaldo, 2000);
+    </script>
+</body>
+</html>
