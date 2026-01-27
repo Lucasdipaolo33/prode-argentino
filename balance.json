@@ -1,0 +1,198 @@
+{
+  "component": "users/Index",
+  "props": {
+    "errors": {},
+    "name": "Bet30",
+    "quote": {
+      "message": "It is never too late to be what you might have been.",
+      "author": "George Eliot"
+    },
+    "locale": "es",
+    "auth": {
+      "user": {
+        "id": 94876,
+        "public_id": "bet30-b5ce67337cb65aefadea4af7a14781",
+        "website_id": 1,
+        "created_by": 85660,
+        "username": "Lucasadmin",
+        "email": null,
+        "email_verified_at": null,
+        "role": "Agente",
+        "casino_commission_percentage": "0.00",
+        "sports_commission_percentage": "0.00",
+        "balance": "10000000000.00",
+        "currency": "ARS",
+        "country": null,
+        "bonus_balance": "0.00",
+        "creation_ip": "2803:9800:909d:785a:ed83:cf7:e019:7a5f",
+        "last_login_ip": null,
+        "locale": "es",
+        "whatsapp_phone": null,
+        "telegram_phone": null,
+        "phone_number": null,
+        "document_type": null,
+        "document_id": null,
+        "created_at": "2026-01-27T06:19:52.000000Z",
+        "updated_at": "2026-01-27T08:08:09.000000Z",
+        "deleted_at": null,
+        "created_at_formatted": "27/01/2026",
+        "updated_at_formatted": "27/01/2026"
+      }
+    },
+    "notifications": [
+      {
+        "id": 4,
+        "website_id": 4,
+        "target_role": "players",
+        "created_by_user_id": 2,
+        "title": "Usuarios",
+        "content": "Estimados usuarios:\nLes recordamos que, en caso de que un cajero no responda, pueden comunicarse a través de la burbuja ubicada junto a las notificaciones. Por ese medio podrán contactarse directamente con su cajero y evitar la pérdida de su número ante eventuales caídas de WhatsApp.",
+        "type": "announcement",
+        "priority": "medium",
+        "active": true,
+        "expires_at": null,
+        "created_at": "2026-01-21T08:43:40.000000Z",
+        "updated_at": "2026-01-21T08:43:40.000000Z",
+        "deleted_at": null
+      }
+    ],
+    "can": {
+      "user": { "view_list": true, "create": true },
+      "transaction": { "view_list": true, "create": true },
+      "game": { "view_list": false, "create": false },
+      "provider": { "view_list": false, "create": false },
+      "bet": { "view_list": true, "create": false },
+      "website": { "view_list": false, "create": false, "delete": false, "manage_critical": false },
+      "notification": { "view_list": false, "create": false },
+      "monthly-report": { "view_list": true }
+    },
+    "sidebarOpen": false,
+    "flash": { "success": null, "error": null, "warning": null, "info": null },
+    "detectedWebsite": {
+      "id": 1,
+      "name": "Bet30",
+      "logo_url": "https://pub-2fb47c47b5ab4b9f8bbcbf90b05946ad.r2.dev/production/websites/1/logo.webp",
+      "favicon_url": "https://cdn.bet30ai.net/production/bet30/websites/1/favicon.webp?v=1769377874",
+      "primary_color": "#0575e6",
+      "secondary_color": "#000719"
+    },
+    "users": {
+      "current_page": 1,
+      "data": [
+        {
+          "id": 94898,
+          "username": "Veronica",
+          "email": null,
+          "role": "Jugador",
+          "balance": "1.00",
+          "website_id": 1,
+          "currency": "ARS",
+          "casino_commission_percentage": "50.00",
+          "sports_commission_percentage": "50.00",
+          "creation_ip": "2803:9800:909d:785a:2c8e:52f0:c2de:3400",
+          "last_login_ip": null,
+          "created_at": "2026-01-27T07:49:41.000000Z",
+          "updated_at": "2026-01-27T08:08:09.000000Z",
+          "created_by": 94876,
+          "deleted_at": null,
+          "children_count": 0,
+          "created_at_formatted": "27/01/2026",
+          "updated_at_formatted": "27/01/2026",
+          "parent": { "id": 94876, "username": "Lucasadmin", "role": "Agente", "created_at_formatted": "", "updated_at_formatted": "" },
+          "can": { "view": true, "update": true, "delete": true, "restore": true }
+        },
+        {
+          "id": 94884,
+          "username": "Raquel828",
+          "email": null,
+          "role": "Jugador",
+          "balance": "0.00",
+          "website_id": 1,
+          "currency": "ARS",
+          "casino_commission_percentage": "0.00",
+          "sports_commission_percentage": "0.00",
+          "creation_ip": "2803:9800:909d:785a:2c8e:52f0:c2de:3400",
+          "last_login_ip": null,
+          "created_at": "2026-01-27T06:51:22.000000Z",
+          "updated_at": "2026-01-27T06:51:22.000000Z",
+          "created_by": 94876,
+          "deleted_at": null,
+          "children_count": 0,
+          "created_at_formatted": "27/01/2026",
+          "updated_at_formatted": "27/01/2026",
+          "parent": { "id": 94876, "username": "Lucasadmin", "role": "Agente", "created_at_formatted": "", "updated_at_formatted": "" },
+          "can": { "view": true, "update": true, "delete": true, "restore": true }
+        },
+        {
+          "id": 94876,
+          "username": "Lucasadmin",
+          "email": null,
+          "role": "Agente",
+          "balance": "10000000000.00",
+          "website_id": 1,
+          "currency": "ARS",
+          "casino_commission_percentage": "0.00",
+          "sports_commission_percentage": "0.00",
+          "creation_ip": "2803:9800:909d:785a:ed83:cf7:e019:7a5f",
+          "last_login_ip": null,
+          "created_at": "2026-01-27T06:19:52.000000Z",
+          "updated_at": "2026-01-27T08:08:09.000000Z",
+          "created_by": 85660,
+          "deleted_at": null,
+          "children_count": 2,
+          "created_at_formatted": "27/01/2026",
+          "updated_at_formatted": "27/01/2026",
+          "parent": { "id": 85660, "username": "Qchu2026", "role": "Agente", "created_at_formatted": "", "updated_at_formatted": "" },
+          "can": { "view": true, "update": true, "delete": false, "restore": false }
+        }
+      ],
+      "first_page_url": "https://paneladmin.ai/users?page=1",
+      "from": 1,
+      "last_page": 1,
+      "last_page_url": "https://paneladmin.ai/users?page=1",
+      "links": [
+        { "url": null, "label": "&laquo; Anterior", "page": null, "active": false },
+        { "url": "https://paneladmin.ai/users?page=1", "label": "1", "page": 1, "active": true },
+        { "url": null, "label": "Siguiente &raquo;", "page": null, "active": false }
+      ],
+      "next_page_url": null,
+      "path": "https://paneladmin.ai/users",
+      "per_page": 10,
+      "prev_page_url": null,
+      "to": 3,
+      "total": 3
+    },
+    "onlineUsersCount": 0,
+    "authUserTree": {
+      "id": 94876,
+      "username": "Lucasadmin",
+      "role": "Agente",
+      "balance": "10000000000.00",
+      "casino_commission_percentage": "0.00",
+      "sports_commission_percentage": "0.00",
+      "team_count": 2,
+      "children": [
+        { "id": 94898, "username": "Veronica", "role": "Jugador", "balance": "1.00", "casino_commission_percentage": "50.00", "sports_commission_percentage": "50.00", "team_count": 0 },
+        { "id": 94884, "username": "Raquel828", "role": "Jugador", "balance": "0.00", "casino_commission_percentage": "0.00", "sports_commission_percentage": "0.00", "team_count": 0 }
+      ]
+    },
+    "websites": [],
+    "filters": [],
+    "enums": {
+      "userRoles": [
+        { "id": "Super Admin", "name": "Super Admin" },
+        { "id": "Admin", "name": "Admin" },
+        { "id": "Agente", "name": "Agente" },
+        { "id": "Jugador", "name": "Jugador" }
+      ],
+      "transactionTypes": [
+        { "name": "DEPOSIT", "value": "Depósito" },
+        { "name": "WITHDRAWAL", "value": "Retiro" }
+      ]
+    }
+  },
+  "url": "/users",
+  "version": "d6f5222ffc6d3eaf474292953285562e",
+  "clearHistory": false,
+  "encryptHistory": false
+}
